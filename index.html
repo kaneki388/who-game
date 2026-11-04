@@ -110,6 +110,11 @@ button[data-o="0"]{border-inline-start-color:var(--ac)}button[data-o="1"]{border
 .role{border:3px solid var(--ink);border-radius:16px;padding:20px 8px;background:#c9f2f0;color:#1d1730;box-shadow:4px 4px 0 var(--ink);transform:rotate(-1deg)}
 .role.spy{background:#1d1730;color:#ffd93b;border-color:#ffd93b}
 .big{height:200px;width:100%;touch-action:manipulation;font-size:36px}
+
+.rl{background:var(--gc,#ffe08a);color:#1d1730;border:2.5px solid var(--ink);border-radius:14px;text-align:right;line-height:1.9;font-size:15px;padding:12px 14px;margin-top:10px}
+.card.rl{box-shadow:5px 5px 0 var(--ink)}
+.gcard .gh{font-family:"Lalezar","Cairo",sans-serif;font-size:28px;text-align:center;background:var(--gc);color:#1d1730;border:2.5px solid var(--ink);border-radius:14px;padding:6px;margin-top:10px}
+.gcard .back{margin:0}
 </style>
 <meta name="theme-color" content="#7c3aed">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,7 +165,7 @@ spy:"🕵️ الجاسوس: اختاروا الفئة من القائمة (أم
 word:"🚌 أتوبيس كومبليت: بيطلع حرف، واكتب إنسان وحيوان ونبات وجماد وبلاد بنفس الحرف. الإجابة اللي محدش كتب زيها بـ 10 نقط، والمتكررة بـ 5، والغلط أو الفاضية بصفر."};
 let showRules=null;
 function rules(g){showRules=showRules===g?null:g;render()}
-function rulesHtml(g){const t=g==="*"?[RULES.gen,RULES.all,RULES.quiz,RULES.tap,RULES.num,RULES.word,RULES.spy]:[RULES[g]||RULES.gen];return '<div class="card" style="text-align:right;line-height:1.9;font-size:15px">'+t.map(x=>'<div style="margin-bottom:8px">'+x+'</div>').join("")+'</div>'}
+function rulesHtml(g){const t=g==="*"?[RULES.gen,RULES.all,RULES.quiz,RULES.tap,RULES.num,RULES.word,RULES.spy]:[RULES[g]||RULES.gen];return '<div class="card rl" style="--gc:'+(GC[g]||"var(--ac)")+'">'+t.map(x=>'<div style="margin-bottom:8px">'+x+'</div>').join("")+'</div>'}
 const ACATS=["إنسان","حيوان","نبات","جماد","بلاد","أكلة","مهنة"],AEM=["🧍","🐾","🌿","🪑","🌍","🍲","👷"];
 const CATS=["اسم حيوان","اسم أكلة","اسم بلد","اسم شخصية مشهورة","حاجة في المطبخ","اسم مسلسل أو فيلم","حاجة في الشنطة","اسم مدينة أو منطقة","مهنة","حاجة في البيت","اسم ولد","اسم بنت","حاجة بتخاف منها","فاكهة أو خضار","حاجة بتتكسف منها"];
 const LET="ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
@@ -181,6 +186,13 @@ function snd(f,d){if(mute)return;try{AC=AC||new(window.AudioContext||window.webk
 function fx(){for(let i=0;i<24;i++){const e=document.createElement("div");e.className="cf";e.textContent=["🎉","✨","🎊","⭐"][i%4];e.style.left=Math.random()*100+"vw";e.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),3600)}[523,659,784].forEach((f,i)=>setTimeout(()=>snd(f,.15),i*140))}
 function tmute(){mute=!mute;ls("wa_mute",mute?"1":"0");render()}
 function setR(n){ROUNDS=n;render()}function setK(k){KINDS=KINDS.includes(k)?KINDS.filter(x=>x!==k):KINDS.concat(k);if(!KINDS.length)KINDS=[k];render()}
+let SEL=null;const GC={all:"var(--ac)",quiz:"#ffe08a",info:"#b8f0c8",td:"#ffc2d4",tap:"#bfe3ff",num:"#e0cfff",word:"#ffd0a8",spy:"#c9f2f0"};
+function setSel(g){SEL=g;render();window.scrollTo(0,0)}
+function chipsR(){return'<div class="note">عدد الجولات</div><div class="chips">'+[5,10,15,0].map(n=>'<button class="chip'+(ROUNDS===n?' sel':'')+'" style="width:auto;margin:0" onclick="setR('+n+')">'+(n||'∞')+'</button>').join("")+'</div>'}
+function chipsK(){return'<div class="note">أنواع الأسئلة</div><div class="chips">'+[["who","مين فينا"],["wyr","لو خيروك"],["conf","اعترف"],["info","معلومات"],["td","حقيقة/تحدي"]].map(k=>'<button class="chip'+(KINDS.includes(k[0])?' sel':'')+'" style="width:auto;margin:0" onclick="setK(\''+k[0]+'\')">'+k[1]+'</button>').join("")+'</div>'}
+function chipsS(){return'<div class="note">نوع الجاسوس (الفئة)</div><div class="chips">'+[-1].concat(SPY_SETS.map((_,k)=>k)).map(k=>'<button class="chip'+(SPYC===k?' sel':'')+'" style="width:auto;margin:0" onclick="setC('+k+')">'+(k<0?"🎲 عشوائي":SPY_SETS[k][0])+'</button>').join("")+'</div>'}
+function lobbyHtml(){const g=SEL;if(!g||!GAMES[g])return'<div class="card"><div class="q">اختاروا لعبة 🎮</div><div class="tiles">'+Object.keys(GAMES).map(k=>'<button class="gm" onclick="setSel(\''+k+'\')">'+GAMES[k][0]+(GAMES[k][1]?'<small>'+GAMES[k][1]+'</small>':'')+'</button>').join("")+'</div></div>';
+return'<div class="card gcard" style="--gc:'+GC[g]+'"><button class="ib back" onclick="setSel(null)">← الألعاب</button><div class="gh">'+GAMES[g][0]+'</div><div class="rl">'+(RULES[g]||RULES.gen)+'</div>'+chipsR()+(g==="all"||g==="quiz"?chipsK():"")+(g==="spy"?chipsS():"")+'<button class="pri" onclick="pick(\''+g+'\')">يلا نبدأ 🎮</button></div>'}
 function SET(){return'<div class="note">عدد الجولات</div><div class="chips">'+[5,10,15,0].map(n=>'<button class="chip'+(ROUNDS===n?' sel':'')+'" style="width:auto;margin:0" onclick="setR('+n+')">'+(n||'∞')+'</button>').join("")+'</div><div class="note">أنواع الأسئلة</div><div class="chips">'+[["who","مين فينا"],["wyr","لو خيروك"],["conf","اعترف"],["info","معلومات"],["td","حقيقة/تحدي"]].map(k=>'<button class="chip'+(KINDS.includes(k[0])?' sel':'')+'" style="width:auto;margin:0" onclick="setK(\''+k[0]+'\')">'+k[1]+'</button>').join("")+'</div>'}
 function kick(k){if(!confirm("تطرد اللاعب ده؟"))return;P2("kick",{id:k,by:id},0);P2("ban/"+k,{by:id},1);cl.publish(BT+"/p/"+k,"",{retain:true});delete P[k];render()}
 function bye(k){try{if(cl&&cl.connected)cl.publish(BT+"/p/"+id,"",{retain:true})}catch(e){}ss("wa_auto",null);if(k)alert("اتشالت من الغرفة");setTimeout(()=>location.reload(),300)}
@@ -254,7 +266,7 @@ function active(){const n=Date.now(),l=Object.keys(P).filter(i=>P[i]&&P[i].name&
 function start(g,x){const live=cur&&cur.g!=="lobby"&&cur.g!=="end"&&cur.r;pub("q",Object.assign({n:Date.now(),g:g,r:(g==="lobby"||g==="end")?0:(live?cur.r+1:1)},x||{}))}
 function pickQuiz(x){const K=x&&x.kd?[x.kd]:(cfg&&cfg.kinds)||["who","wyr","conf","info","td"];let ids=DECK.map((_,i)=>i).filter(i=>K.includes(DECK[i].k)&&!BAD[i]);if(!ids.length)ids=DECK.map((_,i)=>i);let f=ids.filter(i=>!seen[i]);if(!f.length){seen={};f=ids}start("quiz",Object.assign({id:f[Math.floor(Math.random()*f.length)]},x||{}))}
 function pickMix(){const gs=["quiz","quiz","tap","num","word"],last=cur&&cur.g;let g;do{g=gs[Math.floor(Math.random()*gs.length)]}while(g===last&&g!=="quiz");if(g==="quiz")pickQuiz({mix:1});else start(g,{mix:1})}
-function pick(g){if(!cur||cur.g==="lobby"||cur.g==="end"){cfg={rounds:ROUNDS,s:Date.now(),kinds:KINDS};pub("cfg",cfg)}if(g==="all")pickMix();else if(g==="quiz")pickQuiz();else if(g==="info"||g==="td")pickQuiz({kd:g});else if(g==="spy")pickSpy();else start(g)}
+function pick(g){SEL=null;if(!cur||cur.g==="lobby"||cur.g==="end"){cfg={rounds:ROUNDS,s:Date.now(),kinds:KINDS};pub("cfg",cfg)}if(g==="all")pickMix();else if(g==="quiz")pickQuiz();else if(g==="info"||g==="td")pickQuiz({kd:g});else if(g==="spy")pickSpy();else start(g)}
 function pickSpy(){const ps=active();if(ps.length<3){status="الجاسوس محتاج 3 لاعبين على الأقل";render();setTimeout(()=>{if(status.startsWith("الجاسوس")){status="";render()}},4000);return}
   const ci=SPYC<0?Math.floor(Math.random()*SPY_SETS.length):SPYC;start("spy",{cat:ci,loc:SPY_OFF[ci]+Math.floor(Math.random()*SPY_SETS[ci][1].length),spy:ps[Math.floor(Math.random()*ps.length)].id})}
 function spyGuess(i){if(!cur||cur.g!=="spy"||cur.spy!==id||SG[cur.n]||(rev&&rev.n===cur.n))return;SG[cur.n]={loc:i};pub("sg/"+cur.n,{loc:i});doReveal(cur)}
@@ -314,7 +326,7 @@ function render(){
   const top=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]).slice(0,15);
   h+='<section data-t="score"><div class="card"><span class="tag">🏅 لوحة الأبطال</span>'+top.map((n,i)=>'<div style="display:flex;justify-content:space-between;padding:4px 0"><span>'+(['🥇','🥈','🥉'][i]||(i+1)+'.')+' '+esc(n)+'</span><b>'+tot[n]+'</b></div>').join("")+(top.length?'':'<div class="note">مفيش نقاط لسه. العبوا جولة وهتظهر هنا.</div>')+'<div class="note">النقاط بتتحفظ على جهازك وبترجع لما تفتحوا الغرفة تاني.</div></div></section><section data-t="play">';
   if(c.g==="end"){const all=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]);h+='<div class="card pop"><div class="q">🏁 النهاية!</div>'+(all.length?'<div class="win">🏆 الفايز: '+esc(all[0])+'</div>'+all.map((n,i)=>'<div style="display:flex;justify-content:space-between;padding:6px 0"><span>'+(['🥇','🥈','🥉'][i]||(i+1)+'.')+' '+esc(n)+'</span><b>'+tot[n]+'</b></div>').join(""):'<div class="note">محدش جاب نقط</div>')+'<button class="pri" onclick="lobby()">🔁 لعبة جديدة</button></div>'}
-  else if(c.g==="lobby"){h+='<div class="card"><div class="q">اختاروا لعبة 🎮</div>'+'<div class="tiles">'+Object.keys(GAMES).map(g=>'<button class="gm" onclick="pick(\''+g+'\')">'+GAMES[g][0]+(GAMES[g][1]?'<small>'+GAMES[g][1]+'</small>':'')+'</button>').join("")+'</div>'+SET()+'<div class="note">فئة الجاسوس</div><div class="chips">'+[-1].concat(SPY_SETS.map((_,k)=>k)).map(k=>'<button class="chip'+(SPYC===k?' sel':'')+'" style="width:auto;margin:0" onclick="setC('+k+')">'+(k<0?'🎲 عشوائي':SPY_SETS[k][0])+'</button>').join("")+'</div><button onclick="rules(\'*\')">📖 طريقة اللعب</button></div>'+(showRules==="*"?rulesHtml("*"):"")}
+  else if(c.g==="lobby"){h+=lobbyHtml()}
   else{
     const q=c.g==="quiz"?DECK[c.id]:null,nv=needsVote(c),isRev=!!(rev&&rev.n===c.n),mine=V[id]&&V[id].n===c.n?V[id].v:undefined,myR=RD[id]&&RD[id].n===c.n;
     h+='<div class="card"><div style="text-align:center"><span class="tag">'+(q?TAG[q.k]:GAMES[c.g][0])+(c.mix?' 🎉':'')+(c.r&&cfg&&cfg.rounds?' · '+c.r+'/'+cfg.rounds:'')+'</span></div>';
