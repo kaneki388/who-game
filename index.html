@@ -315,7 +315,7 @@ function doReveal(c){pub("rev",{n:c.n});const r=res(c);if(Object.keys(r.pts).len
 function forceRev(){if(cur)doReveal(cur)}
 function dl(c){if(!c||!c.rt||!needsVote(c))return 0;let d=c.rt+({quiz:30,num:20,word:60,tap:15,spy:300,emo:45}[c.g]||30)*1000;if(c.g==="word"&&fv[c.n])d=Math.min(d,fv[c.n]+15000);return d}
 function autoReveal(c,d){if(revN===c.n)return;revN=c.n;setTimeout(()=>{if(cur&&cur.n===c.n&&!(rev&&rev.n===c.n))doReveal(c)},d);setTimeout(()=>{if(cur&&cur.n===c.n&&!(rev&&rev.n===c.n))revN=0},d+4000)}
-setInterval(()=>{if(!cur||!cur.g||!room)return;const d=dl(cur);if(!d||(rev&&rev.n===cur.n))return;const r=Math.max(0,Math.ceil((d-Date.now())/1000)),e=document.getElementById("tm");if(e)e.textContent="⏱ "+r+(cur.g==="word"&&fv[cur.n]?" — 🛑 ستوب! حد خلص":"");if(r<=0)autoReveal(cur,Math.max(0,active().findIndex(p=>p.me))*1500)},500);
+setInterval(()=>{if(!cur||!cur.g||!room)return;const d=dl(cur);if(!d||(rev&&rev.n===cur.n))return;const r=Math.max(0,Math.ceil((d-Date.now())/1000)),e=document.getElementById("tm");if(e)e.textContent="⏱ "+r+(cur.g==="word"&&fv[cur.n]?" — 🛑 ستوب! حد خلص":"");if(r<=1&&(cur.g==="word"||cur.g==="emo")&&!(V[id]&&V[id].n===cur.n)){try{cur.g==="word"?submitWord():submitEmo()}catch(x){}}if(r<=0)autoReveal(cur,1500+Math.max(0,active().findIndex(p=>p.me))*1500)},500);
 function lead(c,ps){
   const d=Math.max(0,ps.findIndex(p=>p.me))*1500;
   if(c.g!=="lobby"&&c.g!=="end"&&needsVote(c)&&!(rev&&rev.n===c.n)&&res(c).done>=ps.length)autoReveal(c,d);
