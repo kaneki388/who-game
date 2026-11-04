@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مين فينا؟ أونلاين 🎭</title>
+<style>
+:root{--bg:#fff7ed;--card:#fff;--tx:#1f1720;--mut:#7a6a70;--ac:#f43f5e;--ac2:#fb923c;--bd:#f3d9c9;--ok:#16a34a;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1218;--card:#2a1d26;--tx:#fbeff3;--mut:#b9a3ad;--bd:#46303c}}
+html{color-scheme:light dark}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Tahoma,"Segoe UI",Arial,sans-serif;min-height:100vh}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{text-align:center;margin:8px 0 2px;font-size:28px}
+.sub{text-align:center;color:var(--mut);font-size:14px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px}
+.q{font-size:21px;font-weight:700;line-height:1.6;text-align:center;margin:6px 0 14px}
+.tag{display:inline-block;font-size:12px;background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;padding:3px 10px;border-radius:99px}
+button,input{font:inherit}
+button{cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px;width:100%;margin-top:8px;font-size:16px}
+button.pri{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;border:0;font-weight:700}
+button.sel{outline:3px solid var(--ac)}
+input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.chip{background:var(--bg);border:1px solid var(--bd);border-radius:99px;padding:4px 12px;font-size:14px}
+.chip.done{border-color:var(--ok)}
+.bar{position:relative;background:var(--bg);border-radius:10px;margin-top:8px;overflow:hidden;border:1px solid var(--bd)}
+.bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--ac),var(--ac2));opacity:.35}
+.bar span{position:relative;display:flex;justify-content:space-between;padding:10px 12px}
+.win{font-size:20px;text-align:center;margin:10px 0 0;font-weight:700}
+.note{color:var(--mut);font-size:13px;text-align:center;margin-top:8px}
+#chat .box{height:180px;overflow-y:auto;background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:8px;font-size:14px}#chat .m{padding:3px 0;word-break:break-word}#chat .m b{color:var(--ac)}#chat .row{display:flex;gap:6px;margin-top:8px}#chat .row input{margin:0}#chat .row button{width:auto;margin:0;padding:0 16px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.grid button{margin:0;padding:14px 0}.big{height:150px;font-size:24px;font-weight:700;color:#fff;border:0}.red{background:#dc2626}.green{background:#16a34a}.gm{text-align:right}.gm small{display:block;color:var(--mut);font-size:13px;font-weight:400}
+.code{font-size:26px;letter-spacing:4px;text-align:center;font-weight:700}
+.cf{position:fixed;top:-30px;font-size:24px;animation:fall 2.6s linear forwards;pointer-events:none;z-index:9}@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+#tm{text-align:center;font-weight:700;font-size:18px;color:var(--ac);min-height:24px}.pop{animation:pop .4s}@keyframes pop{from{transform:scale(.85);opacity:0}}
+.x{background:none;border:0;width:auto;margin:0 4px 0 0;padding:0;font-size:12px;color:var(--mut)}.chip.sel{background:var(--ac);color:#fff;outline:0}
+h1{color:var(--ac)}
+</style>
+</head>
+<body>
+<script>
+window.onerror=function(m,u,l){var a=document.getElementById("app");if(a)a.innerHTML='<div class="card"><div class="q">حصل خطأ 😕</div><div class="note" style="direction:ltr">'+String(m)+' (line '+l+')</div></div>'};
+document.getElementById&&(window.__js=1);
+</script>
+<main>
+<h1>🎭 مين فينا؟</h1>
+<div class="sub" id="sub">أونلاين من غير حسابات · v4</div>
+<div id="app"><div class="card"><div class="note" style="font-size:15px;line-height:1.9">⏳ بيحمّل اللعبة…<br>لو الرسالة دي فضلت ظاهرة، يبقى المتصفح اللي فاتح الملف (واتساب أو معاينة الملفات) مش بيشغّل الجافاسكربت. انسخ الملف لتليفونك وافتحه من Chrome مباشرة.</div></div></div>
+<div id="chat"></div>
+</main>
+<script>
+const DECK=(function(){const B=["بيقول «جاي في الطريق» وهو لسه في السرير","بيبعت رسالة للشخص الغلط","بيشوف الرسالة وبيسيبها أيام من غير رد","بيعمل ستوكينج لإكسه على السوشيال","بيعيط على أفلام الكرتون لحد دلوقتي","بيغني في الحمام بصوت عالي","بيكلم نفسه قدام المراية","بيقول حوارات الأفلام في الوقت الغلط","بيضحك لوحده في الشارع على حاجة فكر فيها","بيتكسف يطلب فلوسه اللي سلفها","بيكدب عشان يهرب من خروجة","بيسمع أغنية محرجة في السر","بيعمل لايك بالغلط على صورة قديمة جداً","بيقعد ساعة يختار ستيكر","بيرقص لوحده في البيت","بيتصور 20 سيلفي عشان صورة واحدة","بيتكلم عن نفسه في أي قعدة","بيقول «أنا مش زعلان» وهو زعلان جداً","بيتخانق مع الموبايل","بيدخل المطبخ ياكل في السر الساعة 3 الفجر","بيكلم الدليفري كأنه صاحبه","بيبعت رسالة صوتية مدتها 5 دقايق","بيمثل إنه فاهم في موضوع وهو مش فاهم حاجة","بيتأخر على معاد مهم ومش بيعتذر","بيتخيل نفسه بطل فيلم وهو ماشي في الشارع","بيدخل بروفايل حد بيحبه كل يوم","بيقول «هنتقابل قريب» وده مش هيحصل","بيخاف من الصراصير أكتر من الكل","بيشتري حاجات مالهاش لازمة عشان عليها خصم","بيقول هعمل دايت من بكرة كل يوم","بيضيع في شارع بيعرفه من 10 سنين","بيتفرج على فيديوهات القطط ساعات","بيحط منبه 10 مرات ومش بيقوم","بيكتب بوست وبيمسحه بعد دقيقة","بيتكسف يرد على رقم غريب","بيسمع نفس الأغنية 50 مرة","بيحلف بالله على حاجة بسيطة","بيوعد الكل بحاجة وبينساها","بيقول نكتة ومحدش بيضحك","بيرد على رسالة بعد ما الموضوع كله يعدي","بيشارك ميمز الساعة 4 الفجر","بيعمل ستيكر لكل حاجة في الجروب","بيلبس نفس الهدوم 3 أيام","بيسيب المواعين للصبح كل يوم","بيمثل إنه مسافر وهو في البيت","بيقعد ساعات في الحمام على الموبايل","بيحكي نفس الحكاية كل مرة وبيضيف عليها","بيتجنب أي مواجهة","بيحب يكون أول واحد يعرف أي فضيحة","بيطلب أكل فوراً بعد أي إعلان","بيضيع الشاحن دايماً","بيطلب نفس الأكلة في المطعم من 5 سنين","بيكتب رأي في الجروب وبيمسحه بسرعة","بيخاف من الضلمة وبيخبي ده","بيخلص رصيد الموبايل في يومين","بيعمل نفسه نايم عشان يهرب من الكلام","بيزعل لو حد مردش في دقيقة","بيسلم على حد في الشارع وهو مش هو"];
+const S=["اتحبس في مصعد","لقى صرصار في أوضته","دخل مسابقة طبخ","اتحط في فيلم رعب","كسب مليون جنيه","اتصور له فيديو محرج وانتشر","اتحجز في مطار 24 ساعة","نسي محفظته في مطعم فخم","وقع في الشارع قدام الناس","بعت رسالة غلط للمدير","اتخطب غصب عنه","قابل إكسه في فرح","اتحبس في بيت مسكون","اتشاف وهو بيغني لوحده","ضاع في بلد أجنبية","قابل مشهور في الشارع","اتفاجئ بامتحان مفاجئ","اتأخر عن طيارة","لقى حد نايم على كنبته","نسي اسم حد قدامه","شاف رسالة مش مفروض يشوفها","اتكشف تاريخ بحثه","اتفضح سره قدام الكل","اتحط في برنامج مقالب","اتعزم على فرح بالبيجامة"];
+const RX=["هيعيط من أول دقيقة","هيصرخ ويجري","هيعترف بكل أسراره","هيعمل نفسه ميت","هيتصل بأمه فوراً","هيهرب ويسيب الكل","هيضحك في الوقت الغلط","هيصور كل حاجة","هيفضل ساكت ومش بيتكلم","هيتفاوض كأنه محامي","هينام في نص الموقف","هيتصرف كأنه ممثل"];
+const E=["كل صحابك يقروا آخر 10 محادثات ليك","تغني قدام الكل في فرح","رسالتك الخاصة تتبعت للجروب بالغلط","تسمع كل اللي بيتقال عنك","تقول سر كل واحد قدامك","صورتك وانت بتعيط تتنشر","تلبس هدوم نوم في شغلك يوم كامل","تتصل بإكسك وتقوله وحشتني","تعلن مرتبك قدام الكل","تقعد ساعة صمت محرج مع الكل","تتكلم بصوت طفل يوم كامل","تقول رأيك الحقيقي في كل واحد","تعلن آخر 5 حاجات بحثت عنها على جوجل","تتقال عنك نكتة قدام ناس كتير","تقع في الشارع قدام الكل","تمشي بالمقلوب يوم كامل","تنشر أقدم صورة ليك على الستوري","تتفضح كدبة كدبتها قدام الكل","تعلن أكتر حاجة بتخاف منها","تقعد وحدك على ترابيزة في عزومة","تلبس لبس مضحك في مناسبة رسمية","صورتك وانت نايم تتنشر","تاكل في اجتماع والكاميرا مفتوحة","تنسى اسم حد قدامه 10 مرات","تسمع صوتك المسجل قدام الكل","فيديو رقصك يتنشر","تعتذر لكل واحد في الجروب","موبايلك على السبيكر وهو بيشغل صوت عالي","تقول بحبك لحد بالغلط","تعلن اسم أول حب ليك","تتحبس ساعة مع واحد بتتجنبه","الأكل يقع على هدومك في عزومة","تدخل حفلة متأخر قدام الكل","تبعت صباح الخير لكل المحادثات بالغلط","تنسى كلامك وانت بتقدم","تقعد أسبوع بدون موبايل"];
+const C=["اعترف: آخر كدبة كدبتها على حد في الجروب؟","اعترف: أغرب حاجة بحثت عنها على جوجل؟","اعترف: أغنية بتسمعها في السر؟","اعترف: أكتر موقف محرج حصلك قدام ناس كتير؟","اعترف: آخر حاجة اشتريتها وندمت عليها؟","اعترف: لقب كنت بتتنادى بيه وبتكرهه؟","اعترف: أكتر حاجة بتتكسف منها في نفسك؟","اعترف: أول حد فكرت فيه لما قريت «اعترف»؟","اعترف: حاجة نفسك تمسحها من تاريخك؟","اعترف: آخر مرة عيطت فيها وإيه السبب؟","اعترف: أغرب حلم حلمته ومحدش يعرفه؟","اعترف: حاجة بتعملها لوحدك ومش عايز حد يشوفك؟","اعترف: رسالة بعتها وندمت عليها؟","اعترف: أكتر حد في الجروب بتغير منه شوية؟","اعترف: أغبى حاجة صدقتها وانت صغير؟","اعترف: آخر مرة اتصورت فيها سيلفي ومسحتها؟","اعترف: موقف اتكسفت فيه وانت في مدرستك أو جامعتك؟","اعترف: أكتر أكلة بتاكلها في السر؟","اعترف: حاجة سرقتها وانت صغير ولو بالغلط؟","اعترف: أكتر حاجة بتخاف تتعمل قدام الناس؟","اعترف: آخر مرة اتأخرت وكدبت في السبب؟","اعترف: حاجة بتحبها ومش بتقولها لحد؟","اعترف: أغرب عادة عندك؟","اعترف: أول لايك أو كومنت ندمت عليه؟","اعترف: آخر شخصية كرتون بتحبها لحد دلوقتي؟","اعترف: أكتر مرة اتحرجت فيها من أهلك؟","اعترف: لو هتغير حاجة واحدة في شكلك إيه هي؟","اعترف: حاجة عملتها عشان تعجب حد؟","اعترف: أسوأ هدية جاتلك وعملت إنك فرحان بيها؟","اعترف: أكتر حاجة وحشتك من زمان وبتتكسف تقولها؟","اعترف: آخر مرة خفت فيها من حاجة سخيفة؟","اعترف: أكتر وقت ضحكت فيه في الوقت الغلط؟","اعترف: اسم حد بتتجنب تتكلم عنه؟","اعترف: آخر حاجة اتفرجت عليها وكسفتك لو حد عرف؟","اعترف: أكتر حاجة غيرت فيها رأيك بعد ما اتكسفت؟","اعترف: حاجة نفسك الجروب كله ينساها؟","اعترف: آخر مرة قلت «أنا كويس» وانت مش كويس؟","اعترف: كلمة بتنطقها غلط من زمان؟","اعترف: أول حاجة تعملها لو اتكشفت فضيحتك؟","اعترف: موقف مع صاحب ليك ندمت على كلامك فيه؟"];
+const LB=["بيقع في الحب من أول نظرة كل أسبوع","بيبعت رسايل لشخص بيحبه ومش بيرد","بيعمل ستوكينج على اللي بيحبه","بيتحرج جداً لما حد يسأله عن الحب","بيعيط على أغاني الحب","بيعمل نفسه مش مهتم وهو مهتم جداً","بيكتب رسالة حب وبيمسحها","بيفتكر تاريخ أول مقابلة مع حد","بيدي فرصة تانية لإكسه بسهولة","بيصدق أول كلمة حب بتتقال له","بيغير من أي حد قريب من حبيبه","بيسمع أغاني رومانسية في السر","بيقعد ساعات يفكر هيرد على الرسالة إزاي","بيحب يتصل بحبيبه كل ساعة","بيتأخر في الرد عمداً عشان يبان مش مهتم","بيحط ستاتوس لشخص معين من غير ما يسميه","بيقول «مش بحب الارتباط» وهو بيحلم بيه","بيعرف يكتب كلام حلو لكن ما بيعرفش يقوله","بيتخيل فرحه من دلوقتي","بيعمل لايك لصورة قديمة لحد بيحبه بالغلط","بيعتذر أول واحد بعد أي خناقة","بيقعد يحلل كل كلمة قالها حد بيحبه","بيحكي مشاكله العاطفية للكل","بيدي نصايح عن الحب وهو أصلاً مش مرتبط","بيقول «بحبك» بسرعة","بيتحرج يقول «بحبك» حتى لأهله","بيحب الغيرة في العلاقة","بيعمل مفاجآت رومانسية","بيخاف من الارتباط","بيحفظ كل تفاصيل حبيبه","بيحتفظ برسايل قديمة لناس راحوا","بيعمل كل حاجة عشان يرجع إكسه","بيدور على الحب على السوشيال","بيعمل بلوك لإكسه وبعدين يفك البلوك","بيقول «أنا اتغيرت» وهو زي ما هو","بيحب فكرة الحب أكتر من الشخص نفسه","بيسهر يكلم حد بيحبه لحد الفجر","بيضيع في كلام حبيبه ويقول «أنا مش فاهم حاجة»","بيحب يعمل هدايا صغيرة من غير مناسبة","بيعيط في الأفلام الرومانسية"];
+const LS=["اتقدم له حد في وقت مش مناسب","حبيبه نسي عيد ميلاده","شاف إكسه مع حد جديد","اتصل بحبيبه ولقاه بيكلم حد تاني","اتفاجأ بحد بيعترف له بالحب","اتخانق مع حبيبه قدام الناس","لقى رسالة غامضة على موبايل حبيبه","حبيبه قاله «لازم نتكلم»","اتعزم على فرح إكسه","حد بعتله وردة مجهولة","حبيبه عزمه على عشا مفاجأة","اتقدم له حد وأهله رفضوا","حبيبه سافر بعيد عنه","اكتشف إن حد بيحبه في السر","حبيبه قاله «أنا مش جاهز للارتباط»"];
+const LR=["هيقعد يعيط","هيصالحه فوراً","هيعمل نفسه مش فارق معاه","هيتصل بصاحبه يحكي له","هيبعتله رسالة طويلة","هيمشي بهدوء","هيقول كلام يندم عليه بعدين","هيعمل مفاجأة تصالح"];
+const LE=["تتعرف على نصفك التاني من أول يوم بس يسافر بعيد","حب هادي لمدة 10 سنين من غير مفاجآت","علاقة كلها غيرة بس حب جامد","علاقة هادية من غير كلمة حب","حبيبك يعرف كل أسرارك","تعرف كل أسرار حبيبك","حبيبك ينسى عيد ميلادك كل سنة","حبيبك يفتكر كل التواريخ بس يتأخر على كل معاد","حبك الأول يرجعلك","تقابل حب جديد دلوقتي","تتجوز عن حب من غير فلوس","تتجوز من غير حب وانت مرتاح ماديًا","حبيبك يكلمك كل ساعة","حبيبك يختفي أيام وبعدين يرجع","تعبر عن مشاعرك بالكلام دايماً","تعبر عنها بالأفعال بس","حبيبك يبعتلك رسالة طويلة كل يوم","حبيبك يفاجئك كل أسبوع بهدية صغيرة","تقعد مع حبيبك كل يوم بس من غير خروج","تخرج مع حبيبك كل يوم بس من غير كلام حقيقي"];
+const LC=["اعترف: أول شخص حبيته؟ (أول حرف من اسمه كفاية)","اعترف: أكتر حاجة بتجذبك في أي حد؟","اعترف: أغرب حاجة عملتها عشان تلفت نظر حد؟","اعترف: آخر مرة حبيت فيها حد وماقلتلوش؟","اعترف: أكبر ندم في علاقة؟","اعترف: أغرب رسالة بعتها لحد بتحبه؟","اعترف: آخر أغنية بتفكرك بحد؟","اعترف: لو هترجع لإكسك هتقوله إيه؟ (بحدود الذوق)","اعترف: أكتر موقف رومانسي في حياتك؟","اعترف: حاجة بتتكسف تطلبها من حبيبك؟","اعترف: أول لقاء مع حد بتحبه كان إزاي؟","اعترف: إيه اللي ممكن تسامح فيه ومستحيل تسامح فيه؟","اعترف: آخر مرة اتخانقت فيها مع حد بتحبه؟","اعترف: مين في الجروب تتوقع إنه هيتجوز قبل الكل؟","اعترف: أكتر صفة بتكرهها في الحبيب؟","اعترف: أغرب هدية رومانسية جاتلك؟","اعترف: بتصدق في الحب من أول نظرة؟","اعترف: أحلى مفاجأة حد عملها لك؟","اعترف: أكتر حاجة بتخاف منها في الارتباط؟","اعترف: المكان المثالي اللي تتخيل تتقدم فيه؟","اعترف: آخر مرة اتحرجت قدام حد بتحبه؟","اعترف: كلمة حب بتحب تسمعها؟","اعترف: بتفضل تحب ولا تتحب؟ وليه؟","اعترف: لو هتكتب جملة حب واحدة هتكتب إيه؟","اعترف: أغبى حاجة عملتها بسبب الحب؟","اعترف: أول حد فكرت تتجوزه؟","اعترف: حاجة نفسك حد يقولهالك دلوقتي؟","اعترف: إيه اللي بيخليك تقرر إن الشخص ده مناسب؟","اعترف: آخر مرة قلبك دق فيها؟"];
+const DECK=[];
+LB.forEach(b=>DECK.push({k:"who",t:"مين فينا أكتر واحد "+b+"؟"}));LS.forEach(x=>LR.forEach(r=>DECK.push({k:"who",t:"مين فينا لو "+x+" "+r+"؟"})));
+for(let i=0;i<LE.length;i++)for(let j=i+1;j<LE.length;j++)DECK.push({k:"wyr",o:[LE[i],LE[j]]});LC.forEach(c=>DECK.push({k:"conf",t:c}));
+B.slice(0,22).forEach(b=>DECK.push({k:"who",t:"مين فينا أكتر واحد "+b+"؟"}));S.slice(0,6).forEach(x=>RX.slice(0,6).forEach(r=>DECK.push({k:"who",t:"مين فينا لو "+x+" "+r+"؟"})));
+for(let i=0;i<E.length;i++)for(let j=i+1;j<E.length;j++)if((i+j)%7===0)DECK.push({k:"wyr",o:[E[i],E[j]]});C.slice(0,12).forEach(c=>DECK.push({k:"conf",t:c}));
+;return DECK;})();
+const TAG={who:"مين فينا؟",wyr:"لو خيروك",conf:"اعترف 🤫"};
+const GAMES={all:["🎉 الكل مجمع","جولات عشوائية من كل الألعاب ورا بعض"],quiz:["❓ أسئلة","مين فينا؟ ولو خيروك واعترف"],tap:["⚡ سرعة الضغط","استنى اللون الأخضر واضغط أسرع من الكل"],num:["🔢 أقل رقم مش متكرر","كل واحد يختار رقم من 1 لـ 10، واللي رقمه أقل وماحدش اختاره زيه يكسب"],word:["🚌 أتوبيس كومبليت","إنسان وحيوان ونبات وجماد وبلاد بنفس الحرف. الإجابة الفريدة 10 نقط والمتكررة 5"]};
+const RULES={
+gen:"1) كلكم تدخلوا بنفس كود الغرفة. 2) أي حد يختار لعبة والكل بينتقل لها. 3) بعد النتيجة كل واحد يضغط «جاهز»، والجولة الجاية بتبدأ لما الكل يجهز. 4) النقاط بتتجمع في لوحة الأبطال.",
+all:"🎉 الكل مجمع: جولات عشوائية من كل الألعاب ورا بعض. القواعد بتتغير مع كل جولة حسب اللعبة اللي طلعت.",
+quiz:"❓ أسئلة: السؤال بيظهر للكل. في «مين فينا؟» كل واحد يختار لاعب واحد من الباقي (مش نفسه)، واللي ياخد أكتر أصوات بياخد نقطة. في «لو خيروك» اختار أ أو ب. في «اعترف» اللاعب اللي عليه الدور يجاوب بصوت عالي. لما الكل يجاوب بتظهر النتيجة، وبعدها الكل يضغط جاهز.",
+tap:"⚡ سرعة الضغط: الزرار أحمر، استنى لما يبقى أخضر واضغط بسرعة. الأسرع ياخد 3 نقط، والتاني 2، والتالت 1. لو ضغطت وهو أحمر بتخسر الجولة.",
+num:"🔢 أقل رقم مش متكرر: كل واحد يختار رقم من 1 لـ 10 في السر. اللي اختار أقل رقم ومحدش اختار زيه بياخد نقطتين. لو كل الأرقام متكررة محدش بيكسب.",
+word:"🚌 أتوبيس كومبليت: بيطلع حرف، واكتب إنسان وحيوان ونبات وجماد وبلاد بنفس الحرف. الإجابة اللي محدش كتب زيها بـ 10 نقط، والمتكررة بـ 5، والغلط أو الفاضية بصفر."};
+let showRules=null;
+function rules(g){showRules=showRules===g?null:g;render()}
+function rulesHtml(g){const t=g==="*"?[RULES.gen,RULES.all,RULES.quiz,RULES.tap,RULES.num,RULES.word]:[RULES[g]||RULES.gen];return '<div class="card" style="text-align:right;line-height:1.9;font-size:15px">'+t.map(x=>'<div style="margin-bottom:8px">'+x+'</div>').join("")+'</div>'}
+const ACATS=["إنسان","حيوان","نبات","جماد","بلاد"],AEM=["🧍","🐾","🌿","🪑","🌍"];
+const CATS=["اسم حيوان","اسم أكلة","اسم بلد","اسم شخصية مشهورة","حاجة في المطبخ","اسم مسلسل أو فيلم","حاجة في الشنطة","اسم مدينة أو منطقة","مهنة","حاجة في البيت","اسم ولد","اسم بنت","حاجة بتخاف منها","فاكهة أو خضار","حاجة بتتكسف منها"];
+const LET=["ب","ت","ج","ح","د","ر","س","ش","ع","ف","ق","ك","ل","م","ن","ه","و","ي","ا"];
+function norm(s){return String(s).replace(/[\u064B-\u0652\u0640\s]+/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").toLowerCase()}
+function genCode(){const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let i=0;i<6;i++)c+=a[Math.floor(Math.random()*a.length)];return c}
+let pendingCode=ls("wa_room")||genCode();
+function newCode(){pendingCode=genCode();const r=document.getElementById("rm");if(r)r.value=pendingCode}
+function shareRoom(){window.open("https://wa.me/?text="+encodeURIComponent("🎭 تعالوا نلعب! افتحوا اللعبة واكتبوا كود الغرفة: "+room),"_blank")}
+function newRoom(){location.reload()}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function esc(s){const d=document.createElement("div");d.textContent=String(s==null?"":s);return d.innerHTML}
+function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k);if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v)}catch(e){return null}}
+const id=ss("wa_id")||(()=>{const x=Math.random().toString(36).slice(2,9);ss("wa_id",x);return x})(),JT=+ss("wa_j")||(()=>{const t=Date.now();ss("wa_j",t);return t})();
+const AV=["🦊","🐼","🐯","🦁","🐸","🐵","🦄","🐙","🐧","🐰","🐨","🦉"];function hs(i){let h=0;for(const c of i)h=(h*31+c.charCodeAt(0))>>>0;return h}
+function AVT(i){return AV[hs(i)%AV.length]}function COL(i){return"hsl("+hs(i)%360+",70%,50%)"}
+let cfg=null,BAD={},fv={},ROUNDS=10,KINDS=["who","wyr","conf"],AC=null,mute=ls("wa_mute")==="1",lastFx=0;
+function snd(f,d){if(mute)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function fx(){for(let i=0;i<24;i++){const e=document.createElement("div");e.className="cf";e.textContent=["🎉","✨","🎊","⭐"][i%4];e.style.left=Math.random()*100+"vw";e.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),3600)}[523,659,784].forEach((f,i)=>setTimeout(()=>snd(f,.15),i*140))}
+function tmute(){mute=!mute;ls("wa_mute",mute?"1":"0");render()}
+function setR(n){ROUNDS=n;render()}function setK(k){KINDS=KINDS.includes(k)?KINDS.filter(x=>x!==k):KINDS.concat(k);if(!KINDS.length)KINDS=[k];render()}
+function SET(){return'<div class="note">عدد الجولات</div><div class="chips">'+[5,10,15,0].map(n=>'<button class="chip'+(ROUNDS===n?' sel':'')+'" style="width:auto;margin:0" onclick="setR('+n+')">'+(n||'∞')+'</button>').join("")+'</div><div class="note">أنواع الأسئلة</div><div class="chips">'+[["who","مين فينا"],["wyr","لو خيروك"],["conf","اعترف"]].map(k=>'<button class="chip'+(KINDS.includes(k[0])?' sel':'')+'" style="width:auto;margin:0" onclick="setK(\''+k[0]+'\')">'+k[1]+'</button>').join("")+'</div>'}
+function kick(k){if(!confirm("تطرد اللاعب ده؟"))return;cl.publish(BT+"/kick",JSON.stringify({id:k}));cl.publish(BT+"/p/"+k,"",{retain:true});delete P[k];render()}
+function bye(k){try{if(cl&&cl.connected)cl.publish(BT+"/p/"+id,"",{retain:true})}catch(e){}ss("wa_auto",null);if(k)alert("اتشالت من الغرفة");setTimeout(()=>location.reload(),300)}
+function badQ(){if(!cur||cur.id==null)return;BAD[cur.id]=1;pub("bad/"+cur.id,{x:1});nextRound()}
+function saveChat(o){try{const a=JSON.parse(ls("wa_ch_"+room)||"[]");a.push({name:o.name,text:o.text});ls("wa_ch_"+room,JSON.stringify(a.slice(-60)))}catch(e){}}
+let name=ls("wa_name")||"",room="",BT="",cl=null,P={},V={},RD={},cur=null,rev=null,RS={},status="",hbT=null,seen={},advN=0,revN=0,tap={n:0,state:"wait",t0:0};
+function pub(t,o){if(cl&&cl.connected)cl.publish(BT+"/"+t,JSON.stringify(o),{retain:true})}
+function beat(){pub("p/"+id,{name:name,t:Date.now(),j:JT})}
+function setupRound(o){if(o.g==="tap"){tap={n:o.n,state:"wait",t0:0};setTimeout(()=>{if(cur&&cur.n===o.n){tap.state="go";tap.t0=performance.now();snd(880,.2);render()}},2000+(o.n%3500))}}
+const BR=["wss://broker.emqx.io:8084/mqtt","wss://broker.hivemq.com:8884/mqtt","wss://test.mosquitto.org:8081"];let bi=0,fails=0;
+const MQ=["https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js","https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js","https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.10.1/mqtt.min.js"];
+function withMqtt(cb,i){i=i||0;if(typeof mqtt!=="undefined")return cb();if(i>=MQ.length){status="تعذر تحميل مكتبة الاتصال. تأكد من الإنترنت وجرب تاني.";render();return}
+  status="بيحمّل مكتبة الاتصال…";render();const e=document.createElement("script");e.src=MQ[i];e.onload=()=>typeof mqtt!=="undefined"?cb():withMqtt(cb,i+1);e.onerror=()=>withMqtt(cb,i+1);document.head.appendChild(e)}
+function join(){BT="wa-who-v3/"+room;status="بيتوصل…";render();withMqtt(()=>{status="بيتوصل…";connect()})}
+function connect(){
+  if(cl)try{cl.end(true)}catch(e){}
+  cl=mqtt.connect(BR[bi],{clientId:"wa"+id+Math.random().toString(36).slice(2,5),reconnectPeriod:3000,connectTimeout:8000});
+  cl.on("connect",()=>{fails=0;status="";cl.subscribe(BT+"/#");beat();clearInterval(hbT);hbT=setInterval(()=>{beat();render()},5000);render()});
+  cl.on("offline",()=>{fails++;status="مفيش اتصال… بنحاول تاني";if(fails>=3){fails=0;bi=(bi+1)%BR.length;status="بنجرب خادم تاني…";connect()}render()});
+  cl.on("message",(t,m,pk)=>{const k=t.slice(BT.length+1);
+    if(!m.length){if(k.startsWith("p/"))delete P[k.slice(2)];return}
+    let o=null;try{o=JSON.parse(m.toString())}catch(e){return}
+    if(k==="c"){addChat(o);return}
+    if(k==="kick"){if(o&&o.id===id)bye(true);return}
+    if(k==="cfg")cfg=o;else if(k.startsWith("bad/"))BAD[k.slice(4)]=1;
+    else if(k.startsWith("p/")){if(o)o.rt=pk&&pk.retain?0:Date.now();P[k.slice(2)]=o}
+    else if(k.startsWith("v/")){V[k.slice(2)]=o;if(o&&cur&&o.n===cur.n&&!fv[o.n])fv[o.n]=Date.now()}else if(k.startsWith("rd/"))RD[k.slice(3)]=o;
+    else if(k==="q"){if(o&&(!cur||cur.n!==o.n)){o.rt=Date.now();cur=o;setupRound(o)}if(o&&o.id!=null)seen[o.id]=1}else if(k==="rev")rev=o;else if(k.startsWith("r/"))RS[k.slice(2)]=o;
+    render()});
+}
+function active(){const n=Date.now(),l=Object.keys(P).filter(i=>P[i]&&P[i].name&&P[i].rt&&n-P[i].rt<20000).sort((a,b)=>(P[a].j||0)-(P[b].j||0)||(a<b?-1:1)),c={};
+  return l.map(i=>{const b=P[i].name;c[b]=(c[b]||0)+1;return{id:i,name:c[b]>1?b+" ("+c[b]+")":b,me:i===id}}).sort((a,b)=>a.id<b.id?-1:1)}
+function start(g,x){const live=cur&&cur.g!=="lobby"&&cur.g!=="end"&&cur.r;pub("q",Object.assign({n:Date.now(),g:g,r:(g==="lobby"||g==="end")?0:(live?cur.r+1:1)},x||{}))}
+function pickQuiz(x){const K=(cfg&&cfg.kinds)||["who","wyr","conf"];let ids=DECK.map((_,i)=>i).filter(i=>K.includes(DECK[i].k)&&!BAD[i]);if(!ids.length)ids=DECK.map((_,i)=>i);let f=ids.filter(i=>!seen[i]);if(!f.length){seen={};f=ids}start("quiz",Object.assign({id:f[Math.floor(Math.random()*f.length)]},x||{}))}
+function pickMix(){const gs=["quiz","quiz","tap","num","word"],last=cur&&cur.g;let g;do{g=gs[Math.floor(Math.random()*gs.length)]}while(g===last&&g!=="quiz");if(g==="quiz")pickQuiz({mix:1});else start(g,{mix:1})}
+function pick(g){if(!cur||cur.g==="lobby"||cur.g==="end"){cfg={rounds:ROUNDS,s:Date.now(),kinds:KINDS};pub("cfg",cfg)}if(g==="all")pickMix();else if(g==="quiz")pickQuiz();else start(g)}
+function nextRound(){const g=cur?cur.g:"lobby";if(g==="lobby"||g==="end")return;if(cfg&&cfg.rounds&&cur.r>=cfg.rounds)return start("end");if(cur.mix)return pickMix();pick(g)}
+function lobby(){start("lobby")}
+function vote(v){if(!cur)return;V[id]={n:cur.n,v:v,name:name};pub("v/"+id,V[id]);render()}
+function ready(){if(!cur)return;RD[id]={n:cur.n};pub("rd/"+id,RD[id]);if(!cl||!cl.connected)status="مفيش اتصال… بنحاول تاني";render()}
+function tapClick(){if(!cur||cur.g!=="tap"||(V[id]&&V[id].n===cur.n))return;if(tap.state==="go")vote(Math.max(1,Math.round(performance.now()-tap.t0)));else vote(-1)}
+function submitWord(){const a=[0,1,2,3,4].map(i=>{const e=document.getElementById("wi"+i);return e?e.value.trim().slice(0,25):""});if(!a.some(x=>x))return;if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();vote(a)}
+function bar(l,n,tot){return '<div class="bar"><i style="width:'+(tot?n/tot*100:0)+'%"></i><span><b>'+esc(l)+'</b><b>'+n+'</b></span></div>'}
+function needsVote(c){return c.g==="tap"||c.g==="num"||c.g==="word"||(c.g==="quiz"&&DECK[c.id].k!=="conf")}
+function res(c){
+  const ps=active(),sub=ps.map(p=>({n:p.name,v:V[p.id]&&V[p.id].n===c.n?V[p.id].v:undefined})).filter(x=>x.v!==undefined),pts={};let rows=[],head="";
+  if(c.g==="quiz"){const q=DECK[c.id],t={};sub.forEach(x=>t[x.v]=(t[x.v]||0)+1);const mx=Math.max(0,...Object.values(t)),opts=q.k==="who"?ps.map(p=>p.name):q.o;
+    rows=opts.map(o=>bar(o,t[o]||0,sub.length));
+    if(q.k==="who"&&mx>0){const w=Object.keys(t).filter(k=>t[k]===mx);head="🏆 بطل الجولة: "+w.map(esc).join(" و ");w.forEach(n=>pts[n]=1)}}
+  else if(c.g==="tap"){const ok=sub.filter(x=>x.v>0).sort((a,b)=>a.v-b.v),bad=sub.filter(x=>x.v<0);
+    rows=ok.map((x,i)=>'<div class="m">'+['🥇','🥈','🥉'][i]+' '+esc(x.n)+' — '+x.v+' م.ث</div>').concat(bad.map(x=>'<div class="m">❌ '+esc(x.n)+' — ضغط بدري</div>'));
+    if(ok[0])head="⚡ الأسرع: "+esc(ok[0].n);[3,2,1].forEach((p,i)=>{if(ok[i])pts[ok[i].n]=p})}
+  else if(c.g==="num"){const cnt={};sub.forEach(x=>cnt[x.v]=(cnt[x.v]||0)+1);const u=Object.keys(cnt).filter(k=>cnt[k]===1).map(Number).sort((a,b)=>a-b);
+    rows=sub.map(x=>'<div class="m">'+esc(x.n)+' اختار <b>'+esc(x.v)+'</b></div>');
+    if(u.length){const w=sub.find(x=>+x.v===u[0]);if(w){head="🏆 الفايز: "+esc(w.n)+" برقم "+u[0];pts[w.n]=2}}else head="مفيش رقم فريد، محدش كسب 😅"}
+  else if(c.g==="word"){const L=norm(LET[Math.floor(c.n/7)%LET.length]),cn=[{},{},{},{},{}],items=sub.map(x=>({n:x.n,a:Array.isArray(x.v)?x.v:[],t:0}));
+    items.forEach(x=>{x.k=x.a.map((t,i)=>{const k=norm(t),ok=k.startsWith(L)&&k.length>1;if(ok&&cn[i])cn[i][k]=(cn[i][k]||0)+1;return ok?k:""})});
+    items.forEach(x=>{x.k.forEach((k,i)=>{if(k)x.t+=cn[i][k]>1?5:10});if(x.t)pts[x.n]=x.t});
+    items.sort((a,b)=>b.t-a.t);
+    rows=items.map(x=>'<div class="m"><b>'+esc(x.n)+'</b> — '+x.t+' نقطة<br><small>'+x.a.map((t,i)=>AEM[i]+' '+esc(t||'—')+(x.k[i]?(cn[i][x.k[i]]>1?' (5)':' (10)'):'')).join(' · ')+'</small></div>');
+    if(items[0]&&items[0].t)head="🏆 الأحسن: "+esc(items[0].n)}
+  return{rows:rows,pts:pts,head:head,done:sub.length}
+}
+function doReveal(c){pub("rev",{n:c.n});const r=res(c);if(Object.keys(r.pts).length)pub("r/"+c.n,{p:r.pts})}
+function forceRev(){if(cur)doReveal(cur)}
+function dl(c){if(!c||!c.rt||!needsVote(c))return 0;let d=c.rt+({quiz:30,num:20,word:60,tap:15}[c.g]||30)*1000;if(c.g==="word"&&fv[c.n])d=Math.min(d,fv[c.n]+15000);return d}
+function autoReveal(c,d){if(revN===c.n)return;revN=c.n;setTimeout(()=>{if(cur&&cur.n===c.n&&!(rev&&rev.n===c.n))doReveal(c)},d);setTimeout(()=>{if(cur&&cur.n===c.n&&!(rev&&rev.n===c.n))revN=0},d+4000)}
+setInterval(()=>{if(!cur||!cur.g||!room)return;const d=dl(cur);if(!d||(rev&&rev.n===cur.n))return;const r=Math.max(0,Math.ceil((d-Date.now())/1000)),e=document.getElementById("tm");if(e)e.textContent="⏱ "+r+(cur.g==="word"&&fv[cur.n]?" — 🛑 ستوب! حد خلص":"");if(r<=0)autoReveal(cur,Math.max(0,active().findIndex(p=>p.me))*1500)},500);
+function lead(c,ps){
+  const d=Math.max(0,ps.findIndex(p=>p.me))*1500;
+  if(c.g!=="lobby"&&c.g!=="end"&&needsVote(c)&&!(rev&&rev.n===c.n)&&res(c).done>=ps.length)autoReveal(c,d);
+  const allReady=ps.length>0&&ps.every(p=>RD[p.id]&&RD[p.id].n===c.n);
+  if(c.g!=="lobby"&&c.g!=="end"&&allReady&&advN!==c.n){advN=c.n;
+    setTimeout(()=>{if(cur&&cur.n===c.n)nextRound()},d);
+    setTimeout(()=>{if(cur&&cur.n===c.n)advN=0},d+4000)}
+}
+function render(){
+  const app=document.getElementById("app"),ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&app.contains(ae))return;
+  if(!room){app.innerHTML='<div class="card"><div class="q">ادخل الغرفة 🚪</div><input id="nm" maxlength="14" placeholder="اسمك" value="'+esc(name)+'"><input id="rm" maxlength="12" placeholder="كود الغرفة" value="'+esc(pendingCode)+'"><button onclick="newCode()">🎲 كود غرفة جديدة</button><div class="note">الكود اتعمل لوحده لغرفة جديدة. ابعته في الجروب والباقي يكتبوا نفس الكود (أو اكتب كود غرفة صاحبك لو هتدخل عنده).</div><button class="pri" onclick="go()">يلا 🎮</button></div>';return}
+  const ps=active(),c=cur&&cur.g?cur:{n:0,g:"lobby"};
+  let h='<div class="card"><div class="note" style="margin:0">كود الغرفة · '+DECK.length+' سؤال + 3 ألعاب</div><div class="code">'+esc(room)+'</div><button onclick="shareRoom()">📲 ابعت الكود في الواتساب</button><div style="display:flex;gap:8px"><button onclick="bye()" style="font-size:13px;padding:8px">🚪 خروج</button><button onclick="tmute()" style="font-size:13px;padding:8px">'+(mute?'🔇':'🔊')+'</button></div>'+(status?'<div class="note">'+esc(status)+'</div>':'')+'<div class="chips" style="margin-top:10px">'+ps.map(p=>{const r=c.g!=="lobby"&&RD[p.id]&&RD[p.id].n===c.n,v=c.g!=="lobby"&&V[p.id]&&V[p.id].n===c.n;return '<span class="chip'+(r?' done':'')+'" style="border-color:'+COL(p.id)+'">'+(r?'👍 ':v?'✅ ':'')+AVT(p.id)+' '+esc(p.name)+(p.me?' (أنت)':'')+(p.me?'':'<button class="x" onclick="kick(\''+p.id+'\')">✖</button>')+'</span>'}).join("")+'</div></div>';
+  const tot={};Object.keys(RS).forEach(k=>{const r=RS[k];if(cfg&&+k<cfg.s)return;if(r&&r.p)Object.keys(r.p).forEach(n=>tot[n]=(tot[n]||0)+r.p[n])});
+  const top=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]).slice(0,5);
+  if(top.length&&c.g!=="end")h+='<div class="card"><span class="tag">🏅 لوحة الأبطال</span>'+top.map((n,i)=>'<div style="display:flex;justify-content:space-between;padding:4px 0"><span>'+['🥇','🥈','🥉','4️⃣','5️⃣'][i]+' '+esc(n)+'</span><b>'+tot[n]+'</b></div>').join("")+'</div>';
+  if(c.g==="end"){const all=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]);h+='<div class="card pop"><div class="q">🏁 النهاية!</div>'+(all.length?'<div class="win">🏆 الفايز: '+esc(all[0])+'</div>'+all.map((n,i)=>'<div style="display:flex;justify-content:space-between;padding:6px 0"><span>'+(['🥇','🥈','🥉'][i]||(i+1)+'.')+' '+esc(n)+'</span><b>'+tot[n]+'</b></div>').join(""):'<div class="note">محدش جاب نقط</div>')+'<button class="pri" onclick="lobby()">🔁 لعبة جديدة</button></div>'}
+  else if(c.g==="lobby"){h+='<div class="card"><div class="q">اختاروا لعبة 🎮</div>'+Object.keys(GAMES).map(g=>'<button class="gm" onclick="pick(\''+g+'\')">'+GAMES[g][0]+(GAMES[g][1]?'<small>'+GAMES[g][1]+'</small>':'')+'</button>').join("")+SET()+'<button onclick="rules(\'*\')">📖 طريقة اللعب</button></div>'+(showRules==="*"?rulesHtml("*"):"")}
+  else{
+    const q=c.g==="quiz"?DECK[c.id]:null,nv=needsVote(c),isRev=!!(rev&&rev.n===c.n),mine=V[id]&&V[id].n===c.n?V[id].v:undefined,myR=RD[id]&&RD[id].n===c.n;
+    h+='<div class="card"><div style="text-align:center"><span class="tag">'+(q?TAG[q.k]:GAMES[c.g][0])+(c.mix?' 🎉':'')+(c.r&&cfg&&cfg.rounds?' · '+c.r+'/'+cfg.rounds:'')+'</span></div>';
+    if(q){h+=q.k==="wyr"?'<div class="q">لو خيروك:</div>':'<div class="q">'+esc(q.t)+'</div>';
+      if(q.k==="conf"){const w=ps.length?ps[c.n%ps.length]:null;if(w)h+='<div class="win">🎯 الدور على: '+esc(w.name)+(w.me?' (أنت)':'')+'</div>'}
+      else if(!isRev){const opts=q.k==="who"?ps.filter(p=>!p.me).map(p=>p.name):q.o;
+        if(q.k==="who"&&!opts.length)h+='<div class="note">محتاجين لاعب تاني! ابعت الكود لصحابك 📲</div>';
+        opts.forEach((o,i)=>{h+='<button class="'+(mine===o?'sel':'')+'" data-o="'+i+'">'+(q.k==="wyr"?(i?'ب) ':'أ) '):'')+esc(o)+'</button>'})}}
+    else if(c.g==="tap"){h+='<div class="q" style="font-size:16px">استنى لما الزرار يبقى أخضر واضغط بسرعة! ضغطة بدري = خسارة</div>';
+      if(!isRev){if(mine!==undefined)h+='<div class="win">تم ✅ '+(mine>0?mine+' م.ث':'ضغطت بدري ❌')+'</div>';
+        else h+='<button class="big '+(tap.state==="go"?'green':'red')+'" onpointerdown="tapClick()">'+(tap.state==="go"?'🟩 اضغط دلوقتي!':'🟥 استنى…')+'</button>'}}
+    else if(c.g==="num"){h+='<div class="q" style="font-size:16px">اختار رقم من 1 لـ 10. الأقل اللي محدش اختاره زيه بيكسب!</div>';
+      if(!isRev){h+='<div class="grid">';for(let i=1;i<=10;i++)h+='<button class="'+(mine===i?'sel':'')+'" onclick="vote('+i+')">'+i+'</button>';h+='</div>'}}
+    else if(c.g==="word"){const L=LET[Math.floor(c.n/7)%LET.length];h+='<div class="q">اكتب كل حاجة بحرف «'+esc(L)+'»</div>';
+      if(!isRev){h+=mine!==undefined?'<div class="win">إجاباتك اتبعتت ✅</div>':ACATS.map((a,i)=>'<input id="wi'+i+'" maxlength="25" placeholder="'+AEM[i]+' '+a+' بحرف '+esc(L)+'">').join('')+'<button class="pri" onclick="submitWord()">🚌 خلصت!</button>'}}
+    if(nv){const t=res(c);if(!isRev){h+='<div id="tm"></div><div class="note">جاوب '+t.done+' من '+ps.length+' — النتيجة بتظهر لما الكل يجاوب</div>';if(t.done>0)h+='<button onclick="forceRev()" style="font-size:13px;padding:8px">اكشف الآن</button>'}
+      else{h+=t.rows.join("");if(t.head)h+='<div class="win">'+t.head+'</div>'}}
+    h+='</div>';
+    const canReady=!nv||isRev,nr=ps.filter(p=>RD[p.id]&&RD[p.id].n===c.n).length,wt=ps.filter(p=>!(RD[p.id]&&RD[p.id].n===c.n)).map(p=>p.name);
+    if(canReady)h+=myR?'<button disabled>👍 إنت جاهز ('+nr+'/'+ps.length+')</button><div class="card" style="text-align:center;margin-top:10px;font-weight:700">⏳ مستنيين: '+wt.map(esc).join(" و ")+'</div>':'<button class="pri" onclick="ready()">✅ جاهز للجولة الجاية</button><div class="note">الجولة الجاية بتبدأ لما الكل يضغط جاهز</div>';
+    h+='<div style="display:flex;gap:8px"><button onclick="nextRound()" style="font-size:13px;padding:8px">⏭ تخطي الجولة</button><button onclick="lobby()" style="font-size:13px;padding:8px">🏠 الألعاب</button>'+(c.g==="quiz"&&DECK[c.id].k!=="conf"?'<button onclick="badQ()" style="font-size:13px;padding:8px">🚩 سخيف</button>':'')+'<button onclick="rules(cur.g)" style="font-size:13px;padding:8px">📖 القواعد</button></div>'+(showRules===c.g?rulesHtml(c.g):'');
+    lead(c,ps);
+  }
+  app.innerHTML=h;if(c.g!=="lobby"&&lastFx!==c.n&&(c.g==="end"||(rev&&rev.n===c.n))){lastFx=c.n;fx()}
+  app.querySelectorAll("button[data-o]").forEach(b=>b.onclick=()=>{const q2=DECK[cur.id],o=q2.k==="who"?active().filter(p=>!p.me).map(p=>p.name):q2.o;vote(o[+b.dataset.o])});
+}
+function addChat(o,ns){const b=document.querySelector("#chat .box");if(!b||!o||!o.text)return;if(!ns)saveChat(o);const d=document.createElement("div");d.className="m";const n=document.createElement("b");n.textContent=String(o.name||"؟")+": ";const t=document.createElement("span");t.textContent=String(o.text).slice(0,200);d.appendChild(n);d.appendChild(t);const down=b.scrollTop+b.clientHeight>=b.scrollHeight-30;b.appendChild(d);while(b.children.length>60)b.removeChild(b.firstChild);if(down)b.scrollTop=b.scrollHeight}
+function sendChat(){const i=document.getElementById("ci"),v=i.value.trim();if(!v||!cl||!cl.connected)return;cl.publish(BT+"/c",JSON.stringify({id:id,name:name,text:v.slice(0,200),t:Date.now()}),{retain:false});i.value=""}
+function buildChat(){document.getElementById("chat").innerHTML='<div class="card"><span class="tag">💬 الشات</span><div class="box" style="margin-top:8px"></div><div class="row"><input id="ci" maxlength="200" placeholder="اكتب رسالة…"><button class="pri" onclick="sendChat()">إرسال</button></div><div class="note">الشات بيتحفظ على جهازك</div></div>';document.getElementById("ci").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});try{JSON.parse(ls("wa_ch_"+room)||"[]").forEach(o=>addChat(o,1))}catch(e){}}
+function go(){const n=document.getElementById("nm").value.trim(),r=document.getElementById("rm").value.trim().replace(/[^A-Za-z0-9\u0600-\u06FF_-]/g,"");if(!n||!r)return;name=n;room=r;ls("wa_name",n);ls("wa_room",r);ss("wa_auto",JSON.stringify({n:n,r:r}));buildChat();join()}
+if(ss("wa_auto")){try{const a=JSON.parse(ss("wa_auto"));name=a.n;room=a.r;buildChat();join()}catch(e){render()}}else render();
+</script>
+</body>
+</html>
