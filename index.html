@@ -92,7 +92,7 @@ all:"🎉 الكل مجمع: جولات عشوائية من كل الألعاب 
 quiz:"❓ أسئلة: السؤال بيظهر للكل. في «مين فينا؟» كل واحد يختار لاعب واحد من الباقي (مش نفسه)، واللي ياخد أكتر أصوات بياخد نقطة. في «لو خيروك» اختار أ أو ب. في «اعترف» اللاعب اللي عليه الدور يجاوب بصوت عالي. لما الكل يجاوب بتظهر النتيجة، وبعدها الكل يضغط جاهز.",
 tap:"⚡ سرعة الضغط: الزرار أحمر، استنى لما يبقى أخضر واضغط بسرعة. الأسرع ياخد 3 نقط، والتاني 2، والتالت 1. لو ضغطت وهو أحمر بتخسر الجولة.",
 num:"🔢 أقل رقم مش متكرر: كل واحد يختار رقم من 1 لـ 10 في السر. اللي اختار أقل رقم ومحدش اختار زيه بياخد نقطتين. لو كل الأرقام متكررة محدش بيكسب.",
-spy:"🕵️ الجاسوس: كل اللاعبين بيشوفوا نفس المكان ما عدا واحد بس هو الجاسوس وبيشوف إنه جاسوس. اسألوا بعض أسئلة عن المكان في الشات أو بصوتكم من غير ما تقولوا اسمه. الجاسوس بيحاول يخمّن المكان من أسئلتكم وإجاباتكم، وانتم بتحاولوا تكشفوه. لما تبقوا جاهزين الكل يصوّت على الجاسوس. لو اتكشف كل اللاعبين ياخدوا نقطة، ولو معرفتوش يكسب الجاسوس 3 نقط. وفي أي وقت الجاسوس يقدر يخمّن المكان مرة واحدة: لو صح يكسب فوراً، ولو غلط بتكسبوا انتم.",
+spy:"🕵️ الجاسوس: اختاروا الفئة من القائمة (أماكن/أكلات/حيوانات/مهن)، والدور بيلف: اللي عليه الدور يسأل أي لاعب سؤال وبعدها يضغط «الدور اللي بعده». كل اللاعبين بيشوفوا نفس المكان ما عدا واحد بس هو الجاسوس وبيشوف إنه جاسوس. اسألوا بعض أسئلة عن المكان في الشات أو بصوتكم من غير ما تقولوا اسمه. الجاسوس بيحاول يخمّن المكان من أسئلتكم وإجاباتكم، وانتم بتحاولوا تكشفوه. لما تبقوا جاهزين الكل يصوّت على الجاسوس. لو اتكشف كل اللاعبين ياخدوا نقطة، ولو معرفتوش يكسب الجاسوس 3 نقط. وفي أي وقت الجاسوس يقدر يخمّن المكان مرة واحدة: لو صح يكسب فوراً، ولو غلط بتكسبوا انتم.",
 word:"🚌 أتوبيس كومبليت: بيطلع حرف، واكتب إنسان وحيوان ونبات وجماد وبلاد بنفس الحرف. الإجابة اللي محدش كتب زيها بـ 10 نقط، والمتكررة بـ 5، والغلط أو الفاضية بصفر."};
 let showRules=null;
 function rules(g){showRules=showRules===g?null:g;render()}
@@ -138,13 +138,19 @@ const BR=["wss://broker.emqx.io:8084/mqtt","wss://broker.hivemq.com:8884/mqtt","
 const MQ=["https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js","https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js","https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.10.1/mqtt.min.js"];
 function withMqtt(cb,i){i=i||0;if(typeof mqtt!=="undefined")return cb();if(i>=MQ.length){status="تعذر تحميل مكتبة الاتصال. تأكد من الإنترنت وجرب تاني.";render();return}
   status="بيحمّل مكتبة الاتصال…";render();const e=document.createElement("script");e.src=MQ[i];e.onload=()=>typeof mqtt!=="undefined"?cb():withMqtt(cb,i+1);e.onerror=()=>withMqtt(cb,i+1);document.head.appendChild(e)}
-let KEY=null,TOPIC="",Q=Promise.resolve(),OQ=Promise.resolve(),BANS={},TN={},SPYC=-1;const SUB=window.crypto&&crypto.subtle;
+let MYK="",MYP=null,curPK="",PIN={},KC={},PW="",KEY=null,TOPIC="",Q=Promise.resolve(),OQ=Promise.resolve(),BANS={},TN={},SPYC=-1;const SUB=window.crypto&&crypto.subtle;
 function b64(u){let s="";u.forEach(c=>s+=String.fromCharCode(c));return btoa(s)}function ub64(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
-async function initKey(){if(!SUB)return false;const E=new TextEncoder(),base=await SUB.importKey("raw",E.encode("wa4|"+room),"PBKDF2",false,["deriveBits","deriveKey"]),pb=n=>({name:"PBKDF2",salt:E.encode(n),iterations:150000,hash:"SHA-256"});
+async function initKey(){if(!SUB)return false;const E=new TextEncoder(),base=await SUB.importKey("raw",E.encode("wa4|"+room+"|"+PW),"PBKDF2",false,["deriveBits","deriveKey"]),pb=n=>({name:"PBKDF2",salt:E.encode(n),iterations:150000,hash:"SHA-256"});
 KEY=await SUB.deriveKey(pb("key"),base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);const h=await SUB.deriveBits(pb("topic"),base,128);TOPIC="wa-who-v4/"+Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,"0")).join("");return true}
 async function enc(s){const iv=crypto.getRandomValues(new Uint8Array(12));return b64(iv)+"."+b64(new Uint8Array(await SUB.encrypt({name:"AES-GCM",iv:iv},KEY,new TextEncoder().encode(s))))}
 async function dec(s){const p=s.split(".");return new TextDecoder().decode(await SUB.decrypt({name:"AES-GCM",iv:ub64(p[0])},KEY,ub64(p[1])))}
-function P2(k,o,r){const s=JSON.stringify(o);OQ=OQ.then(async()=>{const m=KEY?await enc(s):s;if(cl&&cl.connected)cl.publish(BT+"/"+k,m,{retain:!!r})}).catch(()=>{})}
+function P2(k,o,r){const s=JSON.stringify(o);OQ=OQ.then(async()=>{const m=KEY?await enc(JSON.stringify({b:s,k:MYK,g:await sgn(s)})):s;if(cl&&cl.connected)cl.publish(BT+"/"+k,m,{retain:!!r})}).catch(()=>{})}
+const EC={name:"ECDSA",namedCurve:"P-256"},SG2={name:"ECDSA",hash:"SHA-256"};
+async function initId(){let v=null;try{v=JSON.parse(ls("wa_acct")||"null")}catch(e){}
+if(!v||!v.p){const kp=await SUB.generateKey(EC,true,["sign","verify"]);v={p:await SUB.exportKey("jwk",kp.privateKey)};ls("wa_acct",JSON.stringify(v))}
+MYP=await SUB.importKey("jwk",v.p,EC,false,["sign"]);MYK=v.p.x+"."+v.p.y;try{PIN=JSON.parse(ls("wa_pin_"+room)||"{}")}catch(e){PIN={}}}
+async function sgn(s){return b64(new Uint8Array(await SUB.sign(SG2,MYP,new TextEncoder().encode(s))))}
+async function vfy(w){if(!w||!w.k||!w.g||typeof w.b!=="string")return false;let K=KC[w.k];if(!K){const q=w.k.split(".");K=KC[w.k]=await SUB.importKey("jwk",{kty:"EC",crv:"P-256",x:q[0],y:q[1],ext:true},EC,false,["verify"])}return SUB.verify(SG2,K,ub64(w.g),new TextEncoder().encode(w.b))}
 function nm(o){const a=active().find(p=>p.id===o.id);return a?a.name:(o.name||"؟")}
 function saveRS(){try{if(room&&(cfg||Object.keys(RS).length))ls("wa_sv_"+room,JSON.stringify({RS:RS,cfg:cfg}))}catch(e){}}
 function restoreRS(){try{const v=JSON.parse(ls("wa_sv_"+room)||"null");if(!v)return;if(!cfg&&v.cfg){cfg=v.cfg;pub("cfg",cfg)}Object.keys(v.RS||{}).forEach(k=>{if(!RS[k]){RS[k]=v.RS[k];pub("r/"+k,RS[k])}});render()}catch(e){}}
@@ -154,26 +160,29 @@ function playV(d,b,auto){if(auto&&!VA.paused&&!VA.ended){VQ.push({d:d,b:b});retu
 function unlockA(){if(AU)return;AU=1;try{VA.src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";const p=VA.play();if(p&&p.catch)p.catch(()=>{AU=0})}catch(e){AU=0}try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.resume)AC.resume()}catch(e){}}
 document.addEventListener("pointerdown",unlockA);document.addEventListener("touchend",unlockA);
 function setC(i){SPYC=i;render()}function nextTurn(){if(!cur)return;const i=((TN[cur.n]&&TN[cur.n].i)||0)+1;TN[cur.n]={i:i};pub("tn/"+cur.n,{i:i});render()}
-function join(){status="بيتوصل…";render();(async()=>{let ok=false;try{ok=await initKey()}catch(e){}if(!ok)KEY=null;BT=ok?TOPIC:"wa-who-v3/"+room;withMqtt(()=>{status="بيتوصل…";connect()})})()}
+function join(){status="بيتوصل…";render();(async()=>{let ok=false;try{ok=await initKey();if(ok){await initId();if(!MYP)ok=false}}catch(e){ok=false}if(!ok)KEY=null;BT=ok?TOPIC:"wa-who-v3/"+room;withMqtt(()=>{status="بيتوصل…";connect()})})()}
 function connect(){
   if(cl)try{cl.end(true)}catch(e){}
   cl=mqtt.connect(BR[bi],{clientId:"wa"+id+Math.random().toString(36).slice(2,5),reconnectPeriod:3000,connectTimeout:8000});
-  cl.on("connect",()=>{fails=0;status="";cl.subscribe(BT+"/#");beat();setTimeout(()=>{if(!HOSTID)pub("host",{id:id})},2500);setTimeout(restoreRS,3500);clearInterval(hbT);hbT=setInterval(()=>{if(BANS[id]&&BANS[id].by===hid())return bye(true);beat();saveRS();render()},5000);render()});
+  cl.on("connect",()=>{fails=0;status="";cl.subscribe(BT+"/#");beat();setTimeout(()=>{if(!HOSTID)pub("host",{id:id})},2500);setTimeout(restoreRS,3500);clearInterval(hbT);hbT=setInterval(()=>{if(BANS[id]&&BANS[id].by===hid()&&P[hid()]&&P[hid()].k===BANS[id].pk)return bye(true);beat();saveRS();render()},5000);render()});
   cl.on("offline",()=>{fails++;status="مفيش اتصال… بنحاول تاني";if(fails>=3){fails=0;bi=(bi+1)%BR.length;status="بنجرب خادم تاني…";connect()}render()});
-  cl.on("message",(t0,m0,pk)=>{Q=Q.then(async()=>{let s=m0.toString();if(m0.length&&KEY){try{s=await dec(s)}catch(e){return}}hm(t0,{length:m0.length,toString:()=>s},pk)}).catch(()=>{})});
+  cl.on("message",(t0,m0,pk)=>{Q=Q.then(async()=>{let s=m0.toString();if(m0.length&&KEY){try{const w=JSON.parse(await dec(s));if(!(await vfy(w)))return;s=w.b;curPK=w.k}catch(e){return}}else curPK="";hm(t0,{length:m0.length,toString:()=>s},pk)}).catch(()=>{})});
 function hm(t,m,pk){const k=t.slice(BT.length+1);
     if(!m.length){if(k.startsWith("p/"))delete P[k.slice(2)];return}
     let o=null;try{o=JSON.parse(m.toString())}catch(e){return}
+    const sid=/^(p|v|rd)\//.test(k)?k.slice(k.indexOf("/")+1):(k==="c"||k==="vm"||k==="sg"?o&&o.id:null);
+    if(KEY&&sid&&P[sid]&&P[sid].k&&P[sid].k!==curPK&&(!k.startsWith("p/")||Date.now()-(P[sid].rt||0)<20000))return;
+    if(k==="kick"||k==="ban"){if(!o||!P[o.by]||P[o.by].k!==curPK)return}
     if(k==="c"){addChat(o);return}if(k==="vm"){addVoice(o);return}
     if(k==="kick"){if(o&&o.id===id&&o.by===hid())bye(true);return}
-    if(k==="cfg")cfg=o;else if(k==="host")HOSTID=o&&o.id;else if(k.startsWith("jd/"))JD[k.slice(3)]=o;else if(k.startsWith("bad/"))BAD[k.slice(4)]=1;else if(k.startsWith("sg/"))SG[k.slice(3)]=o;else if(k.startsWith("tn/"))TN[k.slice(3)]=o;else if(k.startsWith("ban/"))BANS[k.slice(4)]=o;
-    else if(k.startsWith("p/")){if(o)o.rt=pk&&pk.retain?0:Date.now();P[k.slice(2)]=o}
+    if(k==="cfg")cfg=o;else if(k==="host")HOSTID=o&&o.id;else if(k.startsWith("jd/"))JD[k.slice(3)]=o;else if(k.startsWith("bad/"))BAD[k.slice(4)]=1;else if(k.startsWith("sg/"))SG[k.slice(3)]=o;else if(k.startsWith("tn/"))TN[k.slice(3)]=o;else if(k.startsWith("ban/")){if(o){o.pk=curPK;BANS[k.slice(4)]=o}}
+    else if(k.startsWith("p/")){if(o){o.rt=pk&&pk.retain?0:Date.now();if(KEY){o.k=curPK;if(o.name){if(!PIN[o.name]){PIN[o.name]=curPK;ls("wa_pin_"+room,JSON.stringify(PIN))}else if(PIN[o.name]!==curPK)o.bad=1}}}P[k.slice(2)]=o}
     else if(k.startsWith("v/")){V[k.slice(2)]=o;if(o&&cur&&o.n===cur.n&&!fv[o.n])fv[o.n]=Date.now()}else if(k.startsWith("rd/"))RD[k.slice(3)]=o;
     else if(k==="q"){if(o&&(!cur||cur.n!==o.n)){o.rt=Date.now();cur=o;setupRound(o)}if(o&&o.id!=null)seen[o.id]=1}else if(k==="rev")rev=o;else if(k.startsWith("r/"))RS[k.slice(2)]=o;
     render()}
 }
 function active(){const n=Date.now(),l=Object.keys(P).filter(i=>P[i]&&P[i].name&&P[i].rt&&n-P[i].rt<20000).sort((a,b)=>(P[a].j||0)-(P[b].j||0)||(a<b?-1:1)),c={};
-  return l.map(i=>{const b=P[i].name;c[b]=(c[b]||0)+1;return{id:i,name:c[b]>1?b+" ("+c[b]+")":b,me:i===id}}).sort((a,b)=>a.id<b.id?-1:1)}
+  return l.map(i=>{const b=P[i].name+(P[i].bad?" ⚠️":"");c[b]=(c[b]||0)+1;return{id:i,name:c[b]>1?b+" ("+c[b]+")":b,me:i===id}}).sort((a,b)=>a.id<b.id?-1:1)}
 function start(g,x){const live=cur&&cur.g!=="lobby"&&cur.g!=="end"&&cur.r;pub("q",Object.assign({n:Date.now(),g:g,r:(g==="lobby"||g==="end")?0:(live?cur.r+1:1)},x||{}))}
 function pickQuiz(x){const K=x&&x.kd?[x.kd]:(cfg&&cfg.kinds)||["who","wyr","conf","info","td"];let ids=DECK.map((_,i)=>i).filter(i=>K.includes(DECK[i].k)&&!BAD[i]);if(!ids.length)ids=DECK.map((_,i)=>i);let f=ids.filter(i=>!seen[i]);if(!f.length){seen={};f=ids}start("quiz",Object.assign({id:f[Math.floor(Math.random()*f.length)]},x||{}))}
 function pickMix(){const gs=["quiz","quiz","tap","num","word"],last=cur&&cur.g;let g;do{g=gs[Math.floor(Math.random()*gs.length)]}while(g===last&&g!=="quiz");if(g==="quiz")pickQuiz({mix:1});else start(g,{mix:1})}
@@ -230,7 +239,7 @@ function lead(c,ps){
 }
 function render(){
   const app=document.getElementById("app"),ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&app.contains(ae))return;
-  if(!room){app.innerHTML='<div class="card"><div class="q">ادخل الغرفة 🚪</div><div style="text-align:center"><button class="avbtn" onclick="pickPic()">'+(PIC?'<img class="av big" src="'+PIC+'">':'📷')+'</button><div class="note">صورة البروفايل (اختياري)</div></div><input id="nm" maxlength="14" placeholder="اسمك" value="'+esc(name)+'"><input id="rm" maxlength="12" placeholder="كود الغرفة" value="'+esc(pendingCode)+'"><button onclick="newCode()">🎲 كود غرفة جديدة</button><div class="note">الكود اتعمل لوحده لغرفة جديدة. ابعته في الجروب والباقي يكتبوا نفس الكود (أو اكتب كود غرفة صاحبك لو هتدخل عنده). الكود هو مفتاح التشفير، فخليه طويل وماتنشرهوش برا الجروب.</div><button class="pri" onclick="go()">يلا 🎮</button></div>';return}
+  if(!room){app.innerHTML='<div class="card"><div class="q">ادخل الغرفة 🚪</div><div style="text-align:center"><button class="avbtn" onclick="pickPic()">'+(PIC?'<img class="av big" src="'+PIC+'">':'📷')+'</button><div class="note">صورة البروفايل (اختياري)</div></div><input id="nm" maxlength="14" placeholder="اسمك" value="'+esc(name)+'"><input id="rm" maxlength="12" placeholder="كود الغرفة" value="'+esc(pendingCode)+'"><input id="pw" type="password" maxlength="30" placeholder="كلمة سر الغرفة (اختياري، بتزوّد التشفير)"><button onclick="newCode()">🎲 كود غرفة جديدة</button><div class="note">الكود اتعمل لوحده لغرفة جديدة. ابعته في الجروب والباقي يكتبوا نفس الكود (أو اكتب كود غرفة صاحبك لو هتدخل عنده). حسابك (مفتاح توقيع) بيتحفظ على جهازك، واسمك بيتربط بيه في كل غرفة: لو حد دخل بنفس اسمك من جهاز تاني بيظهر جنبه ⚠️. الكود هو مفتاح التشفير، فخليه طويل وماتنشرهوش برا الجروب.</div><button class="pri" onclick="go()">يلا 🎮</button></div>';return}
   const ps=active(),c=cur&&cur.g?cur:{n:0,g:"lobby"};
   let h='<div class="card"><div class="note" style="margin:0">كود الغرفة · '+DECK.length+' سؤال + 3 ألعاب</div><div class="code">'+esc(room)+'</div><div class="note">'+(KEY?"🔒 الرسايل والصور والأصوات مشفّرة بين اللاعبين":"⚠️ التشفير مش متاح في المتصفح ده (افتح من Chrome/Safari عادي)")+'</div><button onclick="shareRoom()">📲 ابعت الكود في الواتساب</button><div style="display:flex;gap:8px"><button onclick="bye()" style="font-size:13px;padding:8px">🚪 خروج</button><button onclick="tmute()" style="font-size:13px;padding:8px">'+(mute?'🔇':'🔊')+'</button><button onclick="pickPic()" style="font-size:13px;padding:8px">📷</button></div>'+(status?'<div class="note">'+esc(status)+'</div>':'')+'<div class="chips" style="margin-top:10px">'+ps.map(p=>{const r=c.g!=="lobby"&&RD[p.id]&&RD[p.id].n===c.n,v=c.g!=="lobby"&&V[p.id]&&V[p.id].n===c.n;return '<span class="chip'+(r?' done':'')+'" style="border-color:'+COL(p.id)+'">'+(r?'👍 ':v?'✅ ':'')+AVI(p.id)+(p.id===hid()?'👑':'')+' '+esc(p.name)+(p.me?' (أنت)':'')+(p.me||!isHost()?'':'<button class="x" onclick="kick(\''+p.id+'\')">✖</button>')+'</span>'}).join("")+'</div></div>';
   const tot={};Object.keys(RS).forEach(k=>{const r=RS[k];if(cfg&&+k<cfg.s)return;if(r&&r.p)Object.keys(r.p).forEach(n=>tot[n]=(tot[n]||0)+r.p[n])});
@@ -274,7 +283,7 @@ function addChat(o,ns){if(!document.querySelector("#chat .box")||!o||!o.text)ret
 function addVoice(o){if(!document.querySelector("#chat .box")||!o||typeof o.data!=="string"||o.data.length>300000||!/^data:audio\/[\w.+-]+(;[\w=.,-]+)*;base64,/i.test(o.data.slice(0,100)))return;const d=document.createElement("div");d.className="m";d.appendChild(chatAv(o.id));const n=document.createElement("b");n.textContent=String(nm(o))+": ";d.appendChild(n);const bt=document.createElement("button");bt.className="vm";bt.textContent="▶️ رسالة صوتية";bt.onclick=()=>playV(o.data,bt,0);d.appendChild(bt);chatPush(d);if(AUTOV&&o.id!==id)playV(o.data,bt,1)}
 function sendChat(){const i=document.getElementById("ci"),v=i.value.trim();if(!v||!cl||!cl.connected)return;P2("c",{id:id,name:name,text:v.slice(0,200),t:Date.now()},0);i.value=""}
 function buildChat(){document.getElementById("chat").innerHTML='<div class="card"><div class="chead"><span class="tag">💬 الشات</span><button class="ib" id="avb" onclick="toggleAV()">'+(AUTOV?'🔈 الصوت شغال':'🔇 الصوت مقفول')+'</button></div><div class="box"></div><div id="emo" class="emo">'+EMO.map(e=>'<button type="button" onclick="addEmo(\''+e+'\')">'+e+'</button>').join("")+'</div><div class="row"><button class="ib" onclick="toggleEmo()">😀</button><input id="ci" maxlength="200" placeholder="اكتب رسالة…"><button class="pri" onclick="sendChat()">إرسال</button><button class="ib" id="mic" onpointerdown="micStart()" onpointerup="micStop()" onpointerleave="micStop()" oncontextmenu="return false">🎤</button></div><div class="note">اضغط مطوّلاً على 🎤 وكلّم (لحد 12 ثانية) والكل هيسمعك. الرسايل المكتوبة بتتحفظ على جهازك.</div></div>';document.getElementById("ci").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});try{JSON.parse(ls("wa_ch_"+room)||"[]").forEach(o=>addChat(o,1))}catch(e){}}
-function go(){const n=document.getElementById("nm").value.trim(),r=document.getElementById("rm").value.trim().replace(/[^A-Za-z0-9\u0600-\u06FF_-]/g,"");if(!n||!r)return;name=n;room=r;ls("wa_name",n);ls("wa_room",r);ss("wa_auto",JSON.stringify({n:n,r:r}));buildChat();join()}
+function go(){const n=document.getElementById("nm").value.trim(),r=document.getElementById("rm").value.trim().replace(/[^A-Za-z0-9\u0600-\u06FF_-]/g,"");if(!n||!r)return;name=n;room=r;PW=(document.getElementById("pw").value||"").trim();ls("wa_name",n);ls("wa_room",r);ss("wa_auto",JSON.stringify({n:n,r:r,p:PW}));buildChat();join()}
 const THEMES=["violet","ocean","forest","sunset","rose"],EMO=["😂","🤣","😍","🥰","😎","🤔","😅","😭","😡","🤯","👍","👎","👏","🙏","🔥","❤️","💔","🎉","🤝","😱","🙈","👀","💀","🤡","😴","🤢","🥳","😜","🤫","🫡","💯","⭐","🕵️","🏆","🎤","😇","🥲","🤪","😏","💪"],PICRE=/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]{20,12000}$/;
 let PIC=ls("wa_pic")||"",AUTOV=ls("wa_autov")!=="0",rec=null,recChunks=[],recT=0,recStream=null,micTO=0;
 function setTheme(t){if(!THEMES.includes(t))t="violet";try{document.documentElement.dataset.theme=t}catch(e){}ls("wa_theme",t)}
@@ -290,7 +299,7 @@ function micStop(){clearTimeout(micTO);try{if(rec&&rec.state!=="inactive")rec.st
 function micDone(){const mime=(rec&&rec.mimeType)||"audio/webm",dur=Date.now()-recT;try{recStream.getTracks().forEach(t=>t.stop())}catch(e){}rec=null;micUI(false);if(dur<500||!recChunks.length)return;const blob=new Blob(recChunks,{type:mime});if(blob.size>150000){status="الرسالة الصوتية كبيرة، جرب أقصر";render();return}const fr=new FileReader();fr.onload=()=>{P2("vm",{id:id,name:name,data:String(fr.result),t:Date.now()},0)};fr.readAsDataURL(blob)}
 (function(){const f=document.getElementById("pf");if(f)f.addEventListener("change",e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const S=72,c=document.createElement("canvas");c.width=c.height=S;const x=c.getContext("2d"),m=Math.min(im.width,im.height);x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);PIC=c.toDataURL("image/jpeg",.7);ls("wa_pic",PIC);if(cl&&cl.connected)beat();render()};im.src=fr.result};fr.readAsDataURL(fl);e.target.value=""})})();
 setTheme(ls("wa_theme")||"violet");
-if(ss("wa_auto")){try{const a=JSON.parse(ss("wa_auto"));name=a.n;room=a.r;buildChat();join()}catch(e){render()}}else render();
+if(ss("wa_auto")){try{const a=JSON.parse(ss("wa_auto"));name=a.n;room=a.r;PW=a.p||"";buildChat();join()}catch(e){render()}}else render();
 </script>
 </body>
 </html>
