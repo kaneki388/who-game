@@ -49,7 +49,43 @@ input:focus{outline:2px solid var(--ac);border-color:transparent}
 .emo{display:none;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:8px;background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:6px}.emo button{margin:0;padding:6px 0;font-size:20px;background:none;border:0}
 .vm{display:inline-block;width:auto;margin:0 4px;padding:3px 12px;font-size:13px;border-radius:99px}
 .rec{background:#dc2626!important;color:#fff;border-color:#dc2626}
+
+/* ===== look: sticker / game-show ===== */
+:root{--ink:#1d1730;--bg:hsl(var(--h) 90% 93%);--card:#fff;--bd:var(--ink);--tx:var(--ink);--mut:#5b5475;--ac:hsl(var(--h) 88% 60%);--ac2:hsl(var(--h2) 90% 62%);--yel:#ffd93b;--ink-on:#1d1730}
+@media(prefers-color-scheme:dark){:root{--ink:#f3f0ff;--bg:hsl(var(--h) 38% 9%);--card:hsl(var(--h) 28% 15%);--tx:#f3f0ff;--mut:#b9b2d4;--bd:var(--ink)}}
+body{font-family:"Cairo","Tajawal",Tahoma,sans-serif;font-weight:600;background-color:var(--bg);background-image:radial-gradient(color-mix(in srgb,var(--ink) 16%,transparent) 1.2px,transparent 1.7px);background-size:22px 22px}
+.topbar{background:var(--ac);border-bottom:3px solid var(--ink);padding:8px 16px}
+.topbar h1{font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:28px;color:#fff;text-shadow:2px 2px 0 #1d1730;letter-spacing:0}
+.card{border:2.5px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink)}
+.q{font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:29px;line-height:1.55}
+.win{font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:25px}
+.tag{background:var(--yel);color:var(--ink-on);border:2px solid var(--ink-on);border-radius:8px;padding:2px 12px;font-size:14px;font-weight:800}
+button{font-weight:700;border:2.5px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+button:hover{border-color:var(--ink);transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:3px}
+button:disabled{box-shadow:none;transform:none}
+button.pri{background:var(--ac);color:var(--ink-on);border:2.5px solid var(--ink)}
+button.sel{background:var(--yel);color:var(--ink-on);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.x,.ib{box-shadow:none}.ib{border-width:2px}.x{border:0}
+input{border:2.5px solid var(--ink);border-radius:12px;background:var(--card);font-weight:600}
+input:focus{outline:3px solid var(--ac);outline-offset:2px}
+.chip{border:2px solid var(--ink);background:var(--card);font-weight:700}
+.chip.sel{background:var(--yel);color:var(--ink-on)}
+.av{border:2px solid var(--ink)}
+.bar{border:2px solid var(--ink);border-radius:10px;background:var(--card)}.bar i{background:var(--ac);opacity:.6}
+.big{font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:32px;border:3px solid var(--ink);border-radius:20px;box-shadow:5px 5px 0 var(--ink)}
+.red{background:#e5352b}.green{background:#16a34a}
+.grid button{font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:22px}
+.gm{border-inline-start:9px solid var(--ac);font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:21px}
+.gm small{font-family:"Cairo",Tahoma,sans-serif;font-size:13px;font-weight:600}
+.code{font-family:"Lalezar","Cairo",sans-serif;font-weight:400;font-size:40px;letter-spacing:6px;background:var(--yel);color:var(--ink-on);border:2.5px dashed var(--ink-on);border-radius:12px;padding:2px 0}
+#chat .box{border:2.5px solid var(--ink);background:var(--card)}
+@media(prefers-reduced-motion:reduce){.cf{display:none}.pop{animation:none}button{transition:none}}
 </style>
+<meta name="theme-color" content="#7c3aed">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Lalezar&display=swap" rel="stylesheet">
 </head>
 <body>
 <script>
