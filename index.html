@@ -267,10 +267,10 @@ function logout(){if(!confirm("تسجّل خروج؟ كل بياناتك محف�
 function bumpStats(all,tot){acct(u=>{touchDay(u);u.st.g++;const w=all[0]===u.n;if(w)u.st.w++;u.st.p+=(tot[u.n]||0);u.xp+=10+(w?25:0)})}
 function myRooms(){try{return JSON.parse(ls("wa_myrooms")||"[]")}catch(e){return[]}}
 function enter(r,p,m){name=myName();room=r;PW=p;MODE=m;OWN=null;CHK=0;ss("wa_auto",JSON.stringify({n:name,r:r,p:p,m:m}));buildChat();join()}
-function doCreate(){const pw=(document.getElementById("pw").value||"").normalize("NFKC").trim().toLowerCase();if(pw.length<3)return amsg("اختار باسورد للغرفة (3 حروف على الأقل)");
+function doCreate(){const PB=!!(document.getElementById("pubc")&&document.getElementById("pubc").checked);window.PUB=PB;const pw=PB?"":(document.getElementById("pw").value||"").normalize("NFKC").trim().toLowerCase();
   const a=myRooms().filter(x=>x.r!==pendingCode);a.unshift({r:pendingCode,p:pw,d:Date.now()});ls("wa_myrooms",JSON.stringify(a.slice(0,6)));enter(pendingCode,pw,"create")}
 function doJoin(){const r=(document.getElementById("rm").value||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,""),pw=(document.getElementById("pw").value||"").normalize("NFKC").trim().toLowerCase();
-  if(r.length<4)return amsg("اكتب كود الغرفة");if(!pw)return amsg("اكتب باسورد الغرفة");enter(r,pw,"join")}
+  if(r.length<4)return amsg("اكتب كود الغرفة");enter(r,pw,"join")}
 function reopen(i){const x=myRooms()[i];if(x){pendingCode=x.r;enter(x.r,x.p,"create")}}
 function giveHost(i){if(!isHost()||!P[i])return;if(!confirm("تسلّم الإشراف لـ "+P[i].name+"؟ هيبقى هو اللي يتحكم في الألعاب."))return;OWN={name:P[i].name,k:P[i].k||""};pub("own",{name:P[i].name,k:P[i].k||""});render()}
 function autoClaim(){if(!OWN||!room)return;if(hid()){ABS=0;return}if(!ABS){ABS=Date.now();return}if(Date.now()-ABS<40000)return;const a=active();if(!a.length)return;let b=a[0];a.forEach(p=>{if((P[p.id].j||0)<(P[b.id].j||0))b=p});if(b.me){pub("own",{name:name,k:MYK,claim:1});ABS=Date.now()-30000}}
@@ -300,7 +300,6 @@ function profHtml(u){const st=u.st||{g:0,w:0,p:0},xp=u.xp||0,lv=lvOf(xp),a=XPL(l
  return'<div class="lvl"><b>⭐ مستوى '+lv+' · '+titleOf(lv)+'</b><div class="tbar"><i style="width:'+pc+'%"></i></div><small>'+xp+' / '+b+' XP</small></div><div class="note" style="margin-top:2px">🎮 '+st.g+' لعبة · 🏆 '+st.w+' فوز · ⭐ '+st.p+' نقطة · 🔥 '+sk+' يوم ورا بعض</div>'+
  '<div class="dq'+(dq.ok?' ok':'')+'">🎁 تحدي اليوم: '+(dq.ok?'خلص ✅ (+40 XP)':'العب 3 جولات ('+Math.min(dq.r,3)+'/3) واكسب جولة ('+Math.min(dq.w,1)+'/1) واكسب 40 XP')+'</div>'+
  '<div class="bdg">'+BADGES.map(x=>'<span class="'+(bd.includes(x[0])?'on':'')+'" title="'+x[2]+'">'+(bd.includes(x[0])?x[1]:'🔒')+'<small>'+x[2]+'</small></span>').join("")+'</div>'}
-function instHtml(){if(isStandalone())return'';if(DIP)return'<div class="card"><span class="tag">📲 تطبيق</span><div class="note">ثبّت اللعبة على موبايلك زي أي تطبيق.</div><button class="pri" onclick="installApp()">📲 ثبّت التطبيق</button></div>';if(/iphone|ipad|ipod/i.test(navigator.userAgent))return'<div class="card"><span class="tag">📲 تطبيق</span><div class="note">على الآيفون: اضغط زرار المشاركة ⬆️ في Safari واختار «إضافة إلى الشاشة الرئيسية».</div></div>';return''}
 function homeHtml(){
   const hero='<div class="hero"><img src="'+window.LOGO+'" alt="مين فينا؟" style="width:104px;height:104px;border-radius:25px;box-shadow:3px 3px 0 rgba(0,0,0,.25);display:block;margin:0 auto 6px"><div class="hl">مين فينا؟</div><div class="hs">لعبة الشلة أونلاين</div></div>';
   const err=ERR?'<div class="note" style="color:#c0504d;font-weight:800">'+esc(ERR)+'</div>':"";
@@ -312,16 +311,16 @@ function homeHtml(){
   const u=USERS()[CUR]||{n:CUR,st:{g:0,w:0,p:0}},st=u.st||{g:0,w:0,p:0};
   const me='<div class="card" style="text-align:center">'+hero+'<button class="avbtn" onclick="pickPic()">'+(PIC?'<img class="av big" src="'+PIC+'">':'📷')+'</button><div class="q" style="margin:6px 0 0">أهلاً '+esc(u.n)+' 👋</div>'+profHtml(u)+'</div>';
   if(SCR==="create")return me+'<div class="card"><span class="tag">➕ غرفة جديدة</span><div class="note">كود غرفتك (ابعته لصحابك):</div><div class="rowc"><div class="code" id="rmc" style="flex:1;margin:8px 0 0">'+esc(pendingCode)+'</div><button class="ib" onclick="newCode()" aria-label="كود جديد" title="كود جديد">🎲</button></div>'+
-    '<div class="rowc"><input id="pw" type="password" maxlength="30" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="اختار باسورد الغرفة"><button class="ib" onclick="togglePw(\'pw\')" aria-label="اظهر أو اخفي">👁</button></div><div id="amsg" class="note" style="font-weight:800"></div>'+
-    '<div class="note">إنت المشرف 👑: إنت بس اللي تختار الألعاب وتتحكم في الجولات. اللي هيدخل لازم يكتب الكود + الباسورد.</div><button class="pri" onclick="doCreate()">ابدأ الغرفة 👑</button><button onclick="setScr(\'home\')">← رجوع</button></div>';
+    '<div class="rowc"><input id="pw" type="password" maxlength="30" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="باسورد الغرفة (اختياري)"><button class="ib" onclick="togglePw(\'pw\')" aria-label="اظهر أو اخفي">👁</button></div><div id="amsg" class="note" style="font-weight:800"></div>'+
+    '<label class="note" style="display:block"><input type="checkbox" id="pubc" style="width:auto;min-height:0;margin:0 6px">🌍 غرفة عامة (تظهر لأي حد في العالم وبدون باسورد)</label><div class="note">إنت المشرف 👑: إنت بس اللي تختار الألعاب وتتحكم في الجولات. اللي هيدخل لازم يكتب الكود + الباسورد.</div><button class="pri" onclick="doCreate()">ابدأ الغرفة 👑</button><button onclick="setScr(\'home\')">← رجوع</button></div>';
   if(SCR==="join")return me+'<div class="card"><span class="tag">🚪 ادخل غرفة</span>'+err+'<input id="rm" maxlength="12" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="كود الغرفة" style="direction:ltr;text-align:center;letter-spacing:2px">'+
-    '<div class="rowc"><input id="pw" type="password" maxlength="30" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="باسورد الغرفة"><button class="ib" onclick="togglePw(\'pw\')" aria-label="اظهر أو اخفي">👁</button></div><div id="amsg" class="note" style="font-weight:800"></div>'+
+    '<div class="rowc"><input id="pw" type="password" maxlength="30" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="باسورد الغرفة (لو فيه)"><button class="ib" onclick="togglePw(\'pw\')" aria-label="اظهر أو اخفي">👁</button></div><div id="amsg" class="note" style="font-weight:800"></div>'+
     '<div class="note">خد الكود والباسورد من المشرف. أول ما تدخل هتستنى المشرف يختار اللعبة.</div><button class="pri" onclick="doJoin()">ادخل 🎮</button><button onclick="setScr(\'home\')">← رجوع</button></div>';
   const mr=myRooms(),hist=(function(){try{return JSON.parse(ls("wa_hist")||"[]")}catch(e){return[]}})();
-  return me+err+'<div class="card"><div class="q">اختار 👇</div><button class="pri" onclick="setScr(\'join\')">🚪 ادخل غرفة (بالكود والباسورد)</button><button class="pri" onclick="pendingCode=genCode();setScr(\'create\')">➕ اعمل غرفة جديدة</button></div>'+
+  return me+err+'<div class="card"><div class="q">اختار 👇</div><button class="pri" onclick="setScr(\'join\')">🚪 ادخل غرفة (بالكود والباسورد)</button><button class="pri" onclick="showPub()">🌍 الغرف العامة حول العالم</button><button class="pri" onclick="pendingCode=genCode();setScr(\'create\')">➕ اعمل غرفة جديدة</button></div>'+
     (mr.length?'<div class="card"><span class="tag">👑 غرفك</span><div class="note">دوس تفتح غرفتك تاني كمشرف</div>'+mr.map((x,i)=>'<button onclick="reopen('+i+')" style="direction:ltr">'+esc(x.r)+'</button>').join("")+'</div>':'')+
     (hist.length?'<div class="card"><span class="tag">📜 آخر ألعابك</span>'+hist.slice(0,5).map(h=>'<div class="m">🏆 '+esc(h.w)+' · '+esc((h.t||[]).map(x=>x[0]+" "+x[1]).join("، "))+'</div>').join("")+'</div>':'')+
-    instHtml()+'<button onclick="logout()" style="font-size:13px;padding:8px">🚪 تسجيل خروج ('+esc(u.n)+')</button>'}
+    '<button onclick="logout()" style="font-size:13px;padding:8px">🚪 تسجيل خروج ('+esc(u.n)+')</button>'}
 const DECK=(function(){const B=["بيقول «جاي في الطريق» وهو لسه في السرير","بيبعت رسالة للشخص الغلط","بيشوف الرسالة وبيسيبها أيام من غير رد","بيعمل ستوكينج لإكسه على السوشيال","بيعيط على أفلام الكرتون لحد دلوقتي","بيغني في الحمام بصوت عالي","بيكلم نفسه قدام المراية","بيقول حوارات الأفلام في الوقت الغلط","بيضحك لوحده في الشارع على حاجة فكر فيها","بيتكسف يطلب فلوسه اللي سلفها","بيكدب عشان يهرب من خروجة","بيسمع أغنية محرجة في السر","بيعمل لايك بالغلط على صورة قديمة جداً","بيقعد ساعة يختار ستيكر","بيرقص لوحده في البيت","بيتصور 20 سيلفي عشان صورة واحدة","بيتكلم عن نفسه في أي قعدة","بيقول «أنا مش زعلان» وهو زعلان جداً","بيتخانق مع الموبايل","بيدخل المطبخ ياكل في السر الساعة 3 الفجر","بيكلم الدليفري كأنه صاحبه","بيبعت رسالة صوتية مدتها 5 دقايق","بيمثل إنه فاهم في موضوع وهو مش فاهم حاجة","بيتأخر على معاد مهم ومش بيعتذر","بيتخيل نفسه بطل فيلم وهو ماشي في الشارع","بيدخل بروفايل حد بيحبه كل يوم","بيقول «هنتقابل قريب» وده مش هيحصل","بيخاف من الصراصير أكتر من الكل","بيشتري حاجات مالهاش لازمة عشان عليها خصم","بيقول هعمل دايت من بكرة كل يوم","بيضيع في شارع بيعرفه من 10 سنين","بيتفرج على فيديوهات القطط ساعات","بيحط منبه 10 مرات ومش بيقوم","بيكتب بوست وبيمسحه بعد دقيقة","بيتكسف يرد على رقم غريب","بيسمع نفس الأغنية 50 مرة","بيحلف بالله على حاجة بسيطة","بيوعد الكل بحاجة وبينساها","بيقول نكتة ومحدش بيضحك","بيرد على رسالة بعد ما الموضوع كله يعدي","بيشارك ميمز الساعة 4 الفجر","بيعمل ستيكر لكل حاجة في الجروب","بيلبس نفس الهدوم 3 أيام","بيسيب المواعين للصبح كل يوم","بيمثل إنه مسافر وهو في البيت","بيقعد ساعات في الحمام على الموبايل","بيحكي نفس الحكاية كل مرة وبيضيف عليها","بيتجنب أي مواجهة","بيحب يكون أول واحد يعرف أي فضيحة","بيطلب أكل فوراً بعد أي إعلان","بيضيع الشاحن دايماً","بيطلب نفس الأكلة في المطعم من 5 سنين","بيكتب رأي في الجروب وبيمسحه بسرعة","بيخاف من الضلمة وبيخبي ده","بيخلص رصيد الموبايل في يومين","بيعمل نفسه نايم عشان يهرب من الكلام","بيزعل لو حد مردش في دقيقة","بيسلم على حد في الشارع وهو مش هو"];
 const S=["اتحبس في مصعد","لقى صرصار في أوضته","دخل مسابقة طبخ","اتحط في فيلم رعب","كسب مليون جنيه","اتصور له فيديو محرج وانتشر","اتحجز في مطار 24 ساعة","نسي محفظته في مطعم فخم","وقع في الشارع قدام الناس","بعت رسالة غلط للمدير","اتخطب غصب عنه","قابل إكسه في فرح","اتحبس في بيت مسكون","اتشاف وهو بيغني لوحده","ضاع في بلد أجنبية","قابل مشهور في الشارع","اتفاجئ بامتحان مفاجئ","اتأخر عن طيارة","لقى حد نايم على كنبته","نسي اسم حد قدامه","شاف رسالة مش مفروض يشوفها","اتكشف تاريخ بحثه","اتفضح سره قدام الكل","اتحط في برنامج مقالب","اتعزم على فرح بالبيجامة"];
 const RX=["هيعيط من أول دقيقة","هيصرخ ويجري","هيعترف بكل أسراره","هيعمل نفسه ميت","هيتصل بأمه فوراً","هيهرب ويسيب الكل","هيضحك في الوقت الغلط","هيصور كل حاجة","هيفضل ساكت ومش بيتكلم","هيتفاوض كأنه محامي","هينام في نص الموقف","هيتصرف كأنه ممثل"];
@@ -540,7 +539,7 @@ function hm(t,m,pk){const k=t.slice(BT.length+1);
     if(k==="rx"){showRx(o);return}if(k==="c"){addChat(o);return}if(k==="vm"){addVoice(o);return}
     if(k==="kick"){if(o&&o.id===id&&o.by===hid())bye(true);return}
     if(k==="own"){if(o&&typeof o.name==="string"){const nn=o.name.slice(0,14);if(!OWN||!KEY||OWN.k===curPK)OWN={name:nn,k:o.k||curPK};else if(o.claim&&!hid()&&ABS&&Date.now()-ABS>25000){const q=Object.keys(P).find(i=>P[i]&&P[i].name===nn&&P[i].k===curPK);if(q&&active().some(a=>a.id===q))OWN={name:nn,k:curPK}}}render();return}if((k==="q"||k==="cfg")&&KEY&&OWN&&OWN.k&&OWN.k!==curPK)return;
-    if(k==="cfg")cfg=o;else if(k.startsWith("cq/"))CQ[k.slice(3)]=Array.isArray(o)?o:[];else if(k==="tm"){TEAMS=!!(o&&o.on);TM=(o&&o.m)||{}}else if(k==="host")HOSTID=o&&o.id;else if(k.startsWith("jd/"))JD[k.slice(3)]=o;else if(k.startsWith("bad/"))BAD[k.slice(4)]=1;else if(k.startsWith("sg/"))SG[k.slice(3)]=o;else if(k.startsWith("tn/"))TN[k.slice(3)]=o;else if(k.startsWith("mf/"))MF[k.slice(3)]=o;else if(k.startsWith("ma/"))MA[k.slice(3)]=o;else if(k.startsWith("mv/"))MV[k.slice(3)]=o;else if(k.startsWith("ban/")){if(o){o.pk=curPK;BANS[k.slice(4)]=o}}
+    if(k==="cfg")cfg=o;else if(k.startsWith("cq/"))CQ[k.slice(3)]=Array.isArray(o)?o:[];else if(k==="tm"){TEAMS=!!(o&&o.on);TM=(o&&o.m)||{}}else if(k==="host")HOSTID=o&&o.id;else if(k.startsWith("gv/"))GVS[k.slice(3)]=o;else if(k.startsWith("jd/"))JD[k.slice(3)]=o;else if(k.startsWith("bad/"))BAD[k.slice(4)]=1;else if(k.startsWith("sg/"))SG[k.slice(3)]=o;else if(k.startsWith("tn/"))TN[k.slice(3)]=o;else if(k.startsWith("mf/"))MF[k.slice(3)]=o;else if(k.startsWith("ma/"))MA[k.slice(3)]=o;else if(k.startsWith("mv/"))MV[k.slice(3)]=o;else if(k.startsWith("ban/")){if(o){o.pk=curPK;BANS[k.slice(4)]=o}}
     else if(k.startsWith("p/")){if(o){o.rt=pk&&pk.retain?0:Date.now();if(KEY){o.k=curPK;if(o.name){if(!PIN[o.name]){PIN[o.name]=curPK;ls("wa_pin_"+room,JSON.stringify(PIN))}else if(PIN[o.name]!==curPK)o.bad=1}}}P[k.slice(2)]=o}
     else if(k.startsWith("v/")){V[k.slice(2)]=o;if(o&&cur&&o.n===cur.n&&!fv[o.n])fv[o.n]=Date.now()}else if(k.startsWith("rd/"))RD[k.slice(3)]=o;
     else if(k==="q"){if(o&&(!cur||cur.n!==o.n)){o.rt=Date.now();cur=o;setupRound(o)}if(o&&o.id!=null)seen[o.id]=1}else if(k==="rev")rev=o;else if(k.startsWith("r/"))RS[k.slice(2)]=o;
@@ -721,10 +720,80 @@ function micDone(){const mime=(rec&&rec.mimeType)||"audio/webm",dur=Date.now()-r
 setTheme(ls("wa_theme")||"violet");
 if(CUR&&ss("wa_auto")){try{const a=JSON.parse(ss("wa_auto"));name=myName();room=a.r;PW=a.p||"";MODE=a.m||"join";buildChat();join()}catch(e){render()}}else render();
 
-(function(){try{const l=document.createElement("link");l.rel="manifest";l.href="manifest.webmanifest";document.head.appendChild(l);if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}catch(e){}})();
-var DIP=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();DIP=e;try{render()}catch(x){}});window.addEventListener("appinstalled",()=>{DIP=null;try{render()}catch(x){}});
-function installApp(){if(DIP){DIP.prompt();DIP.userChoice.finally(()=>{DIP=null;render()})}}
-function isStandalone(){return window.matchMedia&&matchMedia("(display-mode: standalone)").matches||navigator.standalone}
+(function(){try{const ic=window.LOGO;const m={name:"مين فينا؟",short_name:"مين فينا",display:"standalone",background_color:"#f5f1e0",theme_color:"#3a2d6b",dir:"rtl",lang:"ar",icons:[{src:ic,sizes:"256x256",type:"image/png",purpose:"any"}]};const l=document.createElement("link");l.rel="manifest";l.href="data:application/manifest+json,"+encodeURIComponent(JSON.stringify(m));document.head.appendChild(l);}catch(e){}})();
+</script>
+<script>
+function showPub(){var app=document.getElementById("app");app.innerHTML='<div class="card"><div class="q">🌍 الغرف العامة</div><div id="pl" class="note">بدوّر على غرف…</div><button onclick="location.reload()">← رجوع</button></div>';
+withMqtt(function(){var L={},c=mqtt.connect(BR[bi],{clientId:"wp"+Math.random().toString(36).slice(2,8),connectTimeout:8000});
+function dr(){var e=document.getElementById("pl");if(!e){try{c.end(true)}catch(x){}return}
+var a=Object.keys(L).map(function(k){return L[k]}).filter(function(x){return Date.now()-x.t<90000&&hid_().indexOf(String(x.r))<0}).sort(function(a,b){return b.n-a.n});
+e.innerHTML=a.length?a.map(function(x){var r=String(x.r).replace(/[^A-Z0-9]/g,"");return'<button onclick="joinPub(\''+r+'\')">🚪 غرفة '+r+' · 👑 '+esc(String(x.h).slice(0,14))+' · 👥 '+(+x.n||1)+'</button><button class="ib" style="width:auto" onclick="hidePub(\''+r+'\')">🚩 إبلاغ وإخفاء</button>'}).join(""):"مفيش غرف عامة مفتوحة دلوقتي. اعمل إنت غرفة وفعّل «غرفة عامة» 🌍"}
+window._pubc=c;c.on("connect",function(){c.subscribe("wa-pub-v1/#")});
+c.on("message",function(t,m){try{var o=JSON.parse(m.toString());if(o&&o.r)L[o.r]=o}catch(e){}dr()});
+setTimeout(dr,4000);var iv=setInterval(function(){if(!document.getElementById("pl"))clearInterval(iv);else dr()},5000)})}
+function joinPub(r){try{window._pubc.end(true)}catch(e){}enter(String(r).replace(/[^A-Z0-9]/g,""),"","join")}
+setInterval(function(){if(!window.PUB||!room||!cl||!cl.connected||!isHost())return;try{cl.publish("wa-pub-v1/"+room,JSON.stringify({r:room,h:name,n:active().length,t:Date.now(),g:cur&&cur.g||"lobby"}),{retain:true})}catch(e){}},8000);
+</script>
+<script>
+var GVS={},UPD={url:"",code:1,link:""},_r0=render;
+render=function(){_r0.apply(this,arguments);try{addGV()}catch(e){}};
+function addGV(){var o=document.getElementById("gvc");if(o)o.remove();
+if(!room||(cur&&cur.g&&cur.g!=="lobby"&&cur.g!=="end"))return;
+var sec=document.querySelector('#app section[data-t="room"]');if(!sec)return;
+var ok={};active().forEach(function(a){ok[a.id]=a.name});
+var cnt={},who={},best=null,ks=Object.keys(GAMES),mine=GVS[id]&&GVS[id].g;
+Object.keys(GVS).forEach(function(i){var v=GVS[i];if(!v||!ok[i]||!GAMES[v.g]||Date.now()-v.t>600000||(cur&&cur.rt&&v.t<cur.rt-1000))return;cnt[v.g]=(cnt[v.g]||0)+1;(who[v.g]=who[v.g]||[]).push(ok[i])});
+ks.forEach(function(k){if(cnt[k]&&(!best||cnt[k]>cnt[best]))best=k});
+sec.insertAdjacentHTML("beforeend",'<div class="card" id="gvc"><span class="tag">🗳️ صوّتوا على اللعبة الجاية</span>'+ks.map(function(k){return'<button class="'+(mine===k?"sel":"")+'" onclick="gvote(\''+k+'\')">'+GAMES[k][0]+(cnt[k]?' · '+cnt[k]:'')+(who[k]?'<small style="display:block;font-weight:600">'+who[k].map(esc).join("، ")+'</small>':'')+'</button>'}).join("")+(isHost()&&best?'<button class="pri" onclick="pick(\''+best+'\')">▶️ ابدأ الأكتر تصويتاً: '+GAMES[best][0]+'</button>':'<div class="note">'+(best?'المشرف 👑 هيبدأ اللعبة الأكتر تصويتاً':'اختار لعبة وشوف مين صوّت لإيه')+'</div>')+'</div>')}
+function gvote(k){var o={g:k,t:Date.now()};GVS[id]=o;pub("gv/"+id,o);render()}
+function hid_(){try{return JSON.parse(localStorage.getItem("wa_hidpub")||"[]")}catch(e){return[]}}
+function hidePub(r){var a=hid_();a.push(r);try{localStorage.setItem("wa_hidpub",JSON.stringify(a.slice(-100)))}catch(e){}try{window._pubc.end(true)}catch(e){}showPub()}
+(function(){if(!UPD.url||!window.fetch)return;fetch(UPD.url+"?t="+Date.now()).then(function(r){return r.json()}).then(function(j){if(j&&j.versionCode>UPD.code){var d=document.createElement("div");d.className="toast";d.style.cssText="position:fixed;top:60px;left:10px;right:10px;z-index:200;text-align:center";d.innerHTML='🆕 فيه تحديث جديد'+(j.notes?': '+esc(j.notes):'')+' <a href="'+encodeURI(j.url||UPD.link)+'" style="color:#1d1730">نزّله</a>';document.body.appendChild(d)}}).catch(function(){})})();
+</script>
+<div id="ov" style="position:fixed;inset:0;z-index:100;overflow:auto;background:#1d1433;color:#f3f0ff"></div>
+<script>
+(function(){
+var ov=document.getElementById("ov"),ps=[],sc={},dk={},OF=window.OF={};
+var Q={
+whoq:["مين فينا أكتر واحد بيتأخر على المواعيد؟","مين فينا أكتر واحد ممكن يضحك في عز الجد؟","مين فينا أكتر واحد بيحافظ على الأسرار؟","مين فينا أكتر واحد هيبقى مشهور؟","مين فينا أكتر واحد بياكل كتير؟","مين فينا أكتر واحد بيعمل مقالب؟","مين فينا أكتر واحد بينسى حاجته؟","مين فينا أكتر واحد هتتصل بيه لو وقعت في مشكلة؟"],
+wyr:[["تسافر أي مكان في العالم لوحدك","تقعد في بيتك وكل صحابك حواليك"],["تعرف كل لغات العالم","تعرف تعزف كل الآلات"],["تاكل أحلى أكلة طول عمرك","تجرب كل يوم أكلة جديدة"],["تقرا أفكار الناس","تختفي وقت ما تحب"],["تنام 12 ساعة كل يوم","تنام 4 ساعات وتبقى نشيط"],["صيف طول السنة","شتا طول السنة"]],
+conf:["اعترف: آخر كذبة صغيرة قلتها كانت إيه؟","اعترف: أكتر حاجة بتخاف منها ومش بتقول لحد","اعترف: أغرب عادة عندك لما تكون لوحدك","اعترف: موقف محرج حصلك ولسه فاكره","اعترف: أكتر حاجة ندمت إنك اشتريتها","اعترف: أول حاجة بتعملها لما تصحى"],
+truth:["إيه أكتر أكلة بتحبها ومش بتحب حد يعرف؟","مين أكتر شخص هنا بترتاح معاه؟ وليه؟","إيه أغرب حلم شفته؟","إيه أكتر حاجة نفسك تجربها ومجربتهاش؟","إيه آخر حاجة بحثت عنها على جوجل؟","إيه أكتر حاجة بتضحكك؟"],
+dare:["قلّد صوت حيوان لحد ما حد يخمّنه","اتكلم 30 ثانية من غير ما تقول حرف الألف","ارقص 10 ثواني","احكي نكتة والكل يحكم عليها","اعمل أغرب تعبير وش تقدر عليه لمدة 5 ثواني","اتكلم 20 ثانية وإنت بتبتسم من غير ما تضحك"]};
+var G={whoq:"👥 مين فينا",wyr:"🤔 لو خيروك",conf:"🤫 اعترف",td:"🔥 حقيقة أو تحدي",all:"🎉 الكل مجمع"};
+function R(h){ov.innerHTML='<div style="max-width:560px;margin:0 auto;padding:14px 14px 40px">'+h+'</div>';ov.scrollTop=0}
+function E(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function draw(k){if(!dk[k]||!dk[k].length)dk[k]=Q[k].slice().sort(function(){return Math.random()-.5});return dk[k].pop()}
+function H(n,fn){OF.cb=fn;R('<div class="card"><div class="note">سلّم الموبايل لـ</div><div class="q">'+E(n)+'</div><button class="pri" onclick="OF.c()">أنا '+E(n)+' ✅</button></div>')}
+function C(t,o,fn){OF.cb=fn;R('<div class="card">'+t+o.map(function(x,i){return'<button onclick="OF.c('+i+')">'+E(x)+'</button>'}).join('')+'</div>')}
+function N(h,fn,lbl){OF.cb=fn;R('<div class="card">'+h+'<button class="pri" onclick="OF.c()">'+(lbl||"التالي ⏭️")+'</button></div>')}
+OF.c=function(i){OF.cb&&OF.cb(i)};
+OF.hide=function(){ov.style.display="none"};
+OF.start=function(){ov.style.display="block";R('<div class="card" style="text-align:center"><div class="q">مين فينا؟</div><div class="note">عايزين تلعبوا إزاي؟</div><button class="pri" onclick="OF.hide()">🌐 أونلاين (كل واحد على موبايله)</button><button onclick="OF.setup()">📴 أوفلاين (موبايل واحد من غير نت)</button>'+(navigator.onLine===false?'<div class="note">مفيش نت عندك دلوقتي، اختار أوفلاين 📴</div>':'')+'</div>')};
+OF.setup=function(){var h='<div class="card"><div class="q">مين هيلعب؟</div><div class="note">من 2 لـ 6 لاعبين</div>';for(var i=0;i<6;i++)h+='<input class="pn" maxlength="12" placeholder="اسم لاعب '+(i+1)+'">';R(h+'<button class="pri" onclick="OF.go()">يلا نبدأ</button><div id="er" class="note"></div></div>')};
+OF.go=function(){ps=[].slice.call(document.querySelectorAll(".pn")).map(function(x){return x.value.trim()}).filter(Boolean);if(ps.length<2){document.getElementById("er").textContent="اكتبوا اسمين على الأقل";return}sc={};ps.forEach(function(p){sc[p]=0});menu()};
+function board(){return'<div class="chips">'+ps.map(function(p){return'<span class="chip">'+E(p)+' · '+sc[p]+'</span>'}).join('')+'</div>'}
+function menu(){N('<div class="q">🏆 النقاط</div>'+board()+'<div class="note">الجولة الجاية: صوّتوا على اللعبة</div>',function(){vote(0,{})},"🗳️ ابدأ التصويت")}
+function vote(i,v){if(i>=ps.length){var ks=Object.keys(G),cnt={},mx=0;ks.forEach(function(k){cnt[k]=0});ps.forEach(function(p){cnt[v[p]]++});ks.forEach(function(k){mx=Math.max(mx,cnt[k])});var top=ks.filter(function(k){return cnt[k]===mx}),w=top[Math.floor(Math.random()*top.length)];
+return N('<div class="q">نتيجة التصويت</div>'+ps.map(function(p){return'<div class="m"><b>'+E(p)+'</b> صوّت لـ '+G[v[p]]+'</div>'}).join('')+'<div class="win">اللعبة: '+G[w]+(top.length>1?' (تعادل واتحسم بالقرعة)':'')+'</div>',function(){play(w,menu)})}
+H(ps[i],function(){var ks=Object.keys(G);C('<div class="q">'+E(ps[i])+'، عايز تلعبوا إيه؟</div>',ks.map(function(k){return G[k]}),function(j){v[ps[i]]=ks[j];vote(i+1,v)})})}
+function play(g,done){if(g==="all"){var s=["whoq","wyr","conf","td"],k=0;(function nx(){k<s.length?play(s[k++],nx):done()})();return}({whoq:whoq,wyr:wyr,conf:conf,td:td})[g](done)}
+function whoq(done){var q=draw("whoq"),vt=[];(function t(i){if(i>=ps.length){var c={},m=0;vt.forEach(function(x){c[x[1]]=(c[x[1]]||0)+1;m=Math.max(m,c[x[1]])});var ws=ps.filter(function(p,j){return c[j]===m});ws.forEach(function(p){sc[p]++});return N('<div class="q">'+E(q)+'</div>'+vt.map(function(x){return'<div class="m"><b>'+E(ps[x[0]])+'</b> ← '+E(ps[x[1]])+'</div>'}).join('')+'<div class="win">الأكتر: '+ws.map(E).join(" و ")+' 🎯</div>',done)}
+H(ps[i],function(){C('<span class="tag">مين فينا</span><div class="q">'+E(q)+'</div>'+(ps.length<=3?'<div class="note">ينفع تختار نفسك 😄</div>':''),ps,function(j){vt.push([i,j]);t(i+1)})})})(0)}
+function wyr(done){var q=Q.wyr[Math.floor(Math.random()*Q.wyr.length)],a=[];(function t(i){if(i>=ps.length)return N('<div class="q">لو خيروك</div>'+a.map(function(x,j){return'<div class="m"><b>'+E(ps[j])+'</b>: '+E(q[x])+'</div>'}).join('')+'<div class="note">كل واحد يقول ليه اختار كده 🗣️</div>',done);
+H(ps[i],function(){C('<span class="tag">لو خيروك</span>',q,function(j){a.push(j);t(i+1)})})})(0)}
+function conf(done){var q=draw("conf"),a=[];(function t(i){if(i>=ps.length){var o=a.map(function(x,j){return[x,ps[j]]}).sort(function(){return Math.random()-.5});return(function r(k){if(k>=o.length)return done();N('<span class="tag">اعتراف '+(k+1)+'/'+o.length+'</span><div class="q">'+E(o[k][0])+'</div><div class="note">اقراها بصوت عالي وخمّنوا مين كاتبها</div>',function(){N('<div class="q">الكاتب: '+E(o[k][1])+' 😳</div>',function(){r(k+1)})},"اكشف الكاتب")})(0)}
+H(ps[i],function(){OF.cb=function(){a.push(document.getElementById("ta").value.trim());t(i+1)};R('<div class="card"><span class="tag">اعتراف</span><div class="q">'+E(q)+'</div><textarea id="ta" rows="3" style="width:100%;padding:12px;border-radius:12px;font:inherit" placeholder="اكتب اعترافك هنا" oninput="document.getElementById(\'nb\').disabled=this.value.trim().length<3"></textarea><button id="nb" class="pri" disabled onclick="OF.c()">التالي ⏭️</button><div class="note">الزرار مقفول لحد ما تكتب اعترافك</div></div>')})})(0)}
+function td(done){(function t(i){if(i>=ps.length)return done();H(ps[i],function(){C('<div class="q">'+E(ps[i])+': حقيقة ولا تحدي؟</div>',["🗣️ حقيقة","🔥 تحدي"],function(j){var x=draw(j?"dare":"truth");C('<span class="tag">'+(j?"تحدي":"حقيقة")+'</span><div class="q">'+E(x)+'</div>',["نفّذت ✅ (+1)","تخطّى"],function(k){if(!k)sc[ps[i]]++;t(i+1)})})})})(0)}
+OF.start();
+})();
+</script>
+<script>
+/* تحديث تلقائي: غيّر الرقمين تحت واحط لينك ملف JSON بتاعك */
+(function(){var VER=1,URL_="";if(!URL_||navigator.onLine===false)return;
+fetch(URL_,{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!(j.versionCode>VER))return;
+var d=document.createElement("div");d.style.cssText="position:fixed;top:0;left:0;right:0;z-index:200;background:#d86fa8;color:#1d1730;padding:10px;text-align:center;font-weight:800";
+d.innerHTML="🎉 فيه تحديث جديد"+(j.notes?": "+String(j.notes).replace(/[<>&]/g,""):"")+' <a href="'+encodeURI(j.url)+'" style="color:#1d1730">نزّله</a>';document.body.appendChild(d)}).catch(function(){})})();
 </script>
 </body>
 </html>
