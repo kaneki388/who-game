@@ -12,8 +12,8 @@
 <style>
 :root{--h:262;--h2:322;--bg:hsl(var(--h) 100% 97%);--card:#fff;--tx:#1d1730;--mut:#6b6485;--bd:hsl(var(--h) 55% 90%);--ac:hsl(var(--h) 78% 56%);--ac2:hsl(var(--h2) 85% 60%);--ok:#16a34a;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme="ocean"]{--h:200;--h2:245}:root[data-theme="forest"]{--h:145;--h2:175}:root[data-theme="sunset"]{--h:22;--h2:355}:root[data-theme="rose"]{--h:338;--h2:20}
-@media(prefers-color-scheme:dark){:root{--bg:hsl(var(--h) 30% 8%);--card:hsl(var(--h) 24% 13%);--tx:#f3f0ff;--mut:#a8a1c4;--bd:hsl(var(--h) 20% 25%)}}
-html{color-scheme:light dark}*{box-sizing:border-box}
+@media all{:root{--bg:hsl(var(--h) 30% 8%);--card:hsl(var(--h) 24% 13%);--tx:#f3f0ff;--mut:#a8a1c4;--bd:hsl(var(--h) 20% 25%)}}
+html{color-scheme:dark}*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:Tahoma,"Segoe UI",Arial,sans-serif;min-height:100vh;line-height:1.5}
 .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--bd)}
 .topbar h1{margin:0;font-size:20px;color:var(--ac)}
@@ -57,7 +57,7 @@ input:focus{outline:2px solid var(--ac);border-color:transparent}
 
 /* ===== look: sticker / game-show ===== */
 :root{--ink:#1d1730;--bg:hsl(var(--h) 90% 93%);--card:#fff;--bd:var(--ink);--tx:var(--ink);--mut:#5b5475;--ac:hsl(var(--h) 88% 60%);--ac2:hsl(var(--h2) 90% 62%);--yel:#ffd93b;--ink-on:#1d1730}
-@media(prefers-color-scheme:dark){:root{--ink:#f3f0ff;--bg:hsl(var(--h) 38% 9%);--card:hsl(var(--h) 28% 15%);--tx:#f3f0ff;--mut:#b9b2d4;--bd:var(--ink)}}
+@media all{:root{--ink:#f3f0ff;--bg:hsl(var(--h) 38% 9%);--card:hsl(var(--h) 28% 15%);--tx:#f3f0ff;--mut:#b9b2d4;--bd:var(--ink)}}
 body{font-family:"Cairo","Noto Color Emoji","Tajawal",Tahoma,sans-serif;font-weight:600;background-color:var(--bg);background-image:radial-gradient(color-mix(in srgb,var(--ink) 16%,transparent) 1.2px,transparent 1.7px);background-size:22px 22px}
 .topbar{background:var(--ac);border-bottom:3px solid var(--ink);padding:8px 16px}
 .topbar h1{font-family:"Lalezar","Cairo","Noto Color Emoji",sans-serif;font-weight:400;font-size:28px;color:#fff;text-shadow:2px 2px 0 #1d1730;letter-spacing:0}
@@ -146,7 +146,7 @@ button.sel,.chip.sel,.tag{background:var(--yel)}
 .code{background:linear-gradient(135deg,var(--yel),#ffb347)}
 .red{background:var(--coral)}.green{background:var(--mint);color:var(--ink)}
 #nav button.on{background:var(--yel)}
-@media(prefers-color-scheme:dark){:root{--ink:#f6f1ff;--bg:hsl(var(--h) 45% 9%);--card:hsl(var(--h) 32% 15%);--ac:hsl(var(--h) 95% 66%);--ac2:hsl(var(--h2) 95% 68%)}.card{box-shadow:5px 5px 0 #000}button{box-shadow:3px 3px 0 #000}.topbar h1{text-shadow:2px 2px 0 #000}button.pri{color:#1b1230;text-shadow:none}}
+@media all{:root{--ink:#f6f1ff;--bg:hsl(var(--h) 45% 9%);--card:hsl(var(--h) 32% 15%);--ac:hsl(var(--h) 95% 66%);--ac2:hsl(var(--h2) 95% 68%)}.card{box-shadow:5px 5px 0 #000}button{box-shadow:3px 3px 0 #000}.topbar h1{text-shadow:2px 2px 0 #000}button.pri{color:#1b1230;text-shadow:none}}
 
 /* ===== palette v3: calm, easy on the eyes ===== */
 :root{--ink:#3a3350;--bg:hsl(calc(var(--h) + 6) 40% 95%);--card:#fffefb;--ac:hsl(var(--h) 52% 56%);--ac2:hsl(var(--h2) 55% 62%);--yel:#f7dc8a;--mint:#7fcfa6;--coral:#e98a8a;--mut:#6b6580;--bd:var(--ink)}
@@ -165,9 +165,9 @@ button.pri{background:var(--ac);color:#fff;text-shadow:none}
 .big{border-width:2px;box-shadow:3px 3px 0 color-mix(in srgb,var(--ink) 35%,transparent)}
 .red{background:#d9645e}.green{background:#4fae80;color:#fff}
 #nav{border-top-width:2px}
-@media(prefers-color-scheme:dark){:root{--ink:#d9d3ee;--bg:hsl(var(--h) 22% 11%);--card:hsl(var(--h) 18% 16%);--ac:hsl(var(--h) 48% 50%);--ac2:hsl(var(--h2) 50% 56%);--yel:#c9ad5c;--mut:#a9a2c0}body{background-image:none}.card,button,.big,#app .win{box-shadow:2px 2px 0 #000}.topbar h1{text-shadow:none}.rcard .tag,.tag{color:#1d1730}button.pri{color:#fff}}
+@media all{:root{--ink:#d9d3ee;--bg:hsl(var(--h) 22% 11%);--card:hsl(var(--h) 18% 16%);--ac:hsl(var(--h) 48% 50%);--ac2:hsl(var(--h2) 50% 56%);--yel:#c9ad5c;--mut:#a9a2c0}body{background-image:none}.card,button,.big,#app .win{box-shadow:2px 2px 0 #000}.topbar h1{text-shadow:none}.rcard .tag,.tag{color:#1d1730}button.pri{color:#fff}}
 .rcard{border-top-width:12px}
-@media(prefers-color-scheme:dark){#tm,.code,.hero .hl{color:hsl(var(--h) 70% 76%)}.topbar h1{color:#fff}}
+@media all{#tm,.code,.hero .hl{color:hsl(var(--h) 70% 76%)}.topbar h1{color:#fff}}
 
 /* ===== extras ===== */
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:14px 0 10px}
@@ -183,7 +183,7 @@ button.pri{background:var(--ac);color:#fff;text-shadow:none}
 :root:not([data-theme]) .topbar,:root[data-theme="violet"] .topbar{background:#3a2d6b;border-bottom:3px solid #d86fa8}
 :root:not([data-theme]) .topbar h1,:root[data-theme="violet"] .topbar h1{color:#f5f1e0;text-shadow:none}
 :root:not([data-theme]) .hero .hl,:root[data-theme="violet"] .hero .hl{color:#3a2d6b;text-shadow:3px 3px 0 #d86fa8}
-@media(prefers-color-scheme:dark){:root:not([data-theme]),:root[data-theme="violet"]{--ink:#f1ecd8;--bg:#1d1433;--card:#2f2459;--tx:#f1ecd8;--mut:#b4abd2;--ac:#9a84e6;--ac2:#e585b8}
+@media all{:root:not([data-theme]),:root[data-theme="violet"]{--ink:#f1ecd8;--bg:#1d1433;--card:#2f2459;--tx:#f1ecd8;--mut:#b4abd2;--ac:#9a84e6;--ac2:#e585b8}
 :root:not([data-theme]) .hero .hl,:root[data-theme="violet"] .hero .hl,:root[data-theme="violet"] .code{color:#f1ecd8;text-shadow:3px 3px 0 #d86fa8}
 :root:not([data-theme]) .topbar,:root[data-theme="violet"] .topbar{background:#241a3d}}
 /* ألوان الألعاب: ألوان غنية متناسقة مع اللوجو */
@@ -193,9 +193,21 @@ button.pri{background:var(--ac);color:#fff;text-shadow:none}
 .tiles .gm:nth-child(5){background:#1f6fa8}.tiles .gm:nth-child(6){background:#6b4fc4}.tiles .gm:nth-child(7){background:#c25a1e}
 .tiles .gm:nth-child(8){background:#197a7a}.tiles .gm:nth-child(9){background:#b5483a}.tiles .gm:nth-child(10){background:#a33b8f}.tiles .gm:nth-child(11){background:#454560}
 .rl,.gcard .gh,.rcard .tag{color:#fff}.rl b{color:#fff}
-@media(prefers-color-scheme:dark){.rcard .tag,.tag.x{color:#fff}.tiles .gm{border-color:rgba(255,255,255,.35)}}
+@media all{.rcard .tag,.tag.x{color:#fff}.tiles .gm{border-color:rgba(255,255,255,.35)}}
 /* لون ثابت لكل الألعاب */
 .tiles .gm,.tiles .gm:first-child,.tiles .gm:nth-child(n){background:#5b45b8}
+/* خلفية الصفحة: نيلي اللوجو */
+:root:not([data-theme]) body,:root[data-theme="violet"] body{background:#3a2d6b radial-gradient(rgba(216,111,168,.22) 1.4px,transparent 1.9px) 0 0/24px 24px}
+:root:not([data-theme]) .sub,:root[data-theme="violet"] .sub{color:#f1ecd8}
+@media all{:root:not([data-theme]) body,:root[data-theme="violet"] body{background:#1d1433 radial-gradient(rgba(216,111,168,.16) 1.4px,transparent 1.9px) 0 0/24px 24px}}
+/* تناسق: بدل الأصفر بوردي اللوجو */
+:root:not([data-theme]),:root[data-theme="violet"]{--yel:#f0a3cb;--mint:#9ed8c6;--coral:#f08aa8;--sky:#a9b8f0}
+:root:not([data-theme]) .tag,:root[data-theme="violet"] .tag{color:#2a1f4d}
+:root:not([data-theme]) .rcard .tag,:root[data-theme="violet"] .rcard .tag{color:#fff}
+@media all{:root:not([data-theme]),:root[data-theme="violet"]{--yel:#c9588f}}
+button[data-o]:nth-of-type(n),button[data-o][data-o]{border-inline-start-color:#5b45b8}
+:root:not([data-theme]) .tbar i,:root[data-theme="violet"] .tbar i{background:linear-gradient(90deg,#5b45b8,#d86fa8)}
+:root:not([data-theme]) .win,:root[data-theme="violet"] .win{color:#2a1f4d}
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
